@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Your Optimal Route</title>
+    <script src="http://code.jquery.com/jquery.js"></script>
+</script>
+</head>
+<body>
+    <div id="input">
+    <form action='/distance'>
+        <h3>Where should we start your trip?</h3>
+            <label><input id='startpt' class='autocomplete' onFocus="geolocate()" type='text' name='loc'></input></label>
+        <br>
+        <h3>Where would you like to visit(up to 4 locations)?</h3>
+            <label><input id='location_a' class='autocomplete' onFocus="geolocate()" type='text' name='loc'></input></label>
+            <label><input id='location_b' class='autocomplete' onFocus="geolocate()" type='text' name='loc'></input></label>
+            <label><input id='location_c' class='autocomplete' onFocus="geolocate()" type='text' name='loc'></input></label>
+            <label><input id='location_d' class='autocomplete' onFocus="geolocate()" type='text' name='loc'></input></label>
+            <br><br>
+        <label><input id='sub_btn' type='submit' value='submit'></input></label> 
+    </form>
+    </div>
+    
+
+ <script>
+ </script>
+
+  <script>
+    
+  'use strict';
+  
+      var autocomplete;
+      var componentForm = {
+        street_number: 'short_name',
+        route: 'long_name',
+        neighborhood: 'long_name',
+        premise: 'long_name',
+        point_of_interest: 'long_name',
+        postal_code: 'short_name',
+        country: 'long_name', 
+      };
+
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('startpt')),
+            {types: ['geocode']});
+
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocomplete.addListener('place_changed', fillInAddress);
+      }
+      // place_changed - when user selects a place from the predictions attached, service fires a 'place_changed event' Can call getPlace() on the autocomplete object, to retrieve a PlaceResult object
+
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+
+        for (var component in componentForm) {
+          document.getElementById(component).value = '';
+          document.getElementById(component).disabled = false;
+        }
+      }
+
+      console.log(autocomplete)
+
+
+      // Bias the autocomplete object to the user's geographical location,
+      // as supplied by the browser's 'navigator.geolocation' object.
+      function geolocate() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+            autocomplete.setBounds(circle.getBounds());
+          });
+        }
+      }
+  </script>
+
+
+  <script src="https://maps.googleapis.com/maps/api/js?key={{mykey}}&libraries=places&callback=initAutocomplete"
+        async defer></script>
+</body>
+
+</html>
+
