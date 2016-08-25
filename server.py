@@ -1,20 +1,14 @@
 
 import os
-
-# from jinja2 import StrictUndefined
-
-from flask import (Flask, render_template, redirect, request, flash, session)
+from flask import (Flask, render_template, redirect, request, flash, session, jsonify)
 from flask_debugtoolbar import DebugToolbarExtension
-from datetime import datetime
-
 import googlemaps
 from googlemaps import convert
+import json
 
-from geopy import geocoders
-
-google_api_key = os.environ["GOOGLE_MAPS_SERVER_API_KEY"]
-    
+google_api_key = os.environ["GOOGLE_MAPS_SERVER_API_KEY"]  
 gmaps = googlemaps.Client(key=google_api_key)
+mykey = os.environ["GOOGLE_MAPS_BROWSER_API_KEY"]
 
 
 app = Flask(__name__)
@@ -27,182 +21,198 @@ app.secret_key = "ABC"
 def index():
     """display homepage"""
 
-    mykey = os.environ["GOOGLE_MAPS_BROWSER_API_KEY"]
-
     return render_template("homepage.html",
                             mykey=mykey)
-
-
-
-# @app.route("/distance") 
-# def get_latlong():
-#     """ccc"""
-
-    
-#     locations = request.args.getlist("loc")  
-#     addresses = filter(None, locations)
-#     for point in addresses:
-#         point = geolocator.geocode(point)
-#         x = point.latitude
-#         y = point.longitude
-
-
-#     print (address.latitude, address.longitude)
-
-
-#     return redirect('/')
 
 
 @app.route('/distance')
 def get_list_locations():
     """get value from user input form, filter out any empty input"""
 
-    locations = request.args.getlist("loc")  
+    locations = request.args.getlist("loc") 
     locations = filter(None, locations)
-    #returns a list: ['san francisco', 'san jose', 'oakland']
-
-def get_distance():
-    locations = get_list_locations()
-    origin = locations[0]
-    dests = locations[1:]
-    distance = gmaps.distance_matrix(origin, dests, units="imperial")
-
-    dist = [distance['rows'][0]['elements'][x]['distance']['text'] for x in [0,1]]
-    city = [distance['destination_addresses'][x] for x in [0,1]]
-    city_distance = zip(city, dist)
-    dict(city_distance)
-    print dict(city_distance)
-    #returns a dictionary of key value pairs {'san jose': 123}
-
-def get_first_stop():
-    """compare orign and destination distance among four pair of values"""
-
-    stops = get_first_stop() #call distance function to get dictionary
-    stop_1 = min(stops, key=stops.get) #sort dictionary to find minimum
-    stop_1 = str(stop_1)
-    return stop_1
-    #returns string 'Oakland, CA, USA'
-
-def get_next_distance():
-    """"""
-
-    x = get_list_locations() #get original list
-    x = x.pop(0) #removes origin, returns the rest of the list
-    origin = get_first_stop() #calls compare distance to get new origin
-    dests = [] 
-    for i in get_list_locations:
-        if i == origin:
-            pass
-        else:
-            dests.append[i]
-    return origin, dests
-
-    distance = gmaps.distance_matrix(origin, dests, units="imperial")
-
-
-
-
-
-
-
-
-
-
-## Calls Distance APi to grab all distance calculation by step through the list
-# @app.route("/distance") 
-# def get_loclists():
-#     """import user input locations and create 4 lists, one with each previous 
-#     location removed. To be used in distance matrix API call"""
-
-#     google_api_key = os.environ["GOOGLE_MAPS_SERVER_API_KEY"]
     
-#     gmaps = googlemaps.Client(key=google_api_key)
-#     # origin = request.args.get("startpt")
-#     # dests = request.args.getlist("loc")
-#     locations = request.args.getlist("loc")  #list of origin plus 4 locations
-#     locations = filter(None, locations)
 
-#     # print locations
-#     # for i in range(len(locations)-1):
-#     #     origin = locations[i]
-#     #     dests = locations[i+1:]
-#         # distance = gmaps.distance_matrix(origin, dests, units="imperial")
-#     #     print distance
-
-#     return redirect('/')
-    
-    # ## did not need: while loop to create multiple lists
-    # i = 0
-    # dests = []
-    #     while i <= len(locations)-2: #stepping through 
-    #         origin = locations[i]
-    #         destinations = locations[i+1:]
-    #         dests.append([origin, destinations])
-    #         i += 1
-    # # print locations
+    location_dict = get_api_distances(locations)
+    list_distances = get_distance(location_dict)
+    distance_list = parse_results_distance(list_distances)
+    origin_list = parse_results_origin(list_distances)
+    dests_list = parse_results_dests(list_distances)
+    dest_dist_list = concat_dest_dist(distance_list, dests_list)
+    sorted_dest_dist_list = sort_distance(dest_dist_list)
+    origin_dest_dist_dict = concat_origin_dest_dist(origin_list, sorted_dest_dist_list)
+    stops = order_waypts(origin_list, origin_dest_dist_dict)
 
 
-# def org_dest_dist():
-#     """Unpack JSON results to grab only destination, distance information
-#     and then further unpack to grab """ 
-
-#     distance_matrix = get_loclists()
-
-#     for i in distance_matrix:
-#         distance = [d['rows'][0]['elements'][i]['distance']['text']
-#         i -= 1
-
-    # dis = [d['rows'][0]['elements'][x]['distance']['text'] for x in [0, 1, 2, 3,]]
-    # #can I do x < 4?
-    # dest = [d['destination_addresses'][x] for x in [0,1,2,3]]
-    # distance = zip(dis, dest)
-    # #returns [(u'Oakland, CA, USA', u'12.3 mi'), ...]
-    # for i in distance:
-    #     miles = i[1]
-    #     miles = miles.rstrip('mi')
-    #     float(miles)
-    #returns 12.3
-
-
-
-
-# def find_distance():
-#     """tbd"""
-
-#     location_list = get_loclists()
-#     print location_list
-#     for l in location_list:
-#         origin = l[0]
-#         dests = l[1]
-#         distance = gmaps.distance_matrix(origin, dests, units="imperial")
-#             print distance
-
-# find_distance()
-
-
-
-    
-# def reset_startpt():
-#     """reset start point"""
-
-#     point_1 = compare_distance()
-#     point_dist = del point_dist[point_1]
-
-
-@app.route("/route_map")
-def render_map_view():
-    """securely pass map_browser_api key to render google map"""
-
-    mykey = os.environ["GOOGLE_MAPS_BROWSER_API_KEY"]
-
-    print map_browser_api
-
-    return render_template("route_map.html",
+    return render_template('/route_map.html',
                             mykey=mykey)
+    #{'origin': 0, 'stop1': 1, 'stop2': 2...}
 
 
 
+def get_api_distances(locations):
+    """create origin-destination lists for API call"""
+ 
+    location_dict = {}
+    for origin in locations:
+        location_dict[origin] = []
+        for destination in locations:
+            if destination != origin:
+                location_dict[origin].append(destination)
+            else:
+                pass
+    
+    return location_dict
 
+def get_distance(location_dict):
+    """Make distance API call for all combinations of origin/destinations
+    returns nested dictionaries in a list, each dictionary is one set of 
+    origin-destinations distance information"""
+
+    list_distances = []
+    for tup in location_dict.items():
+        origin = tup[0]
+        dests = tup[1]
+        result = gmaps.distance_matrix(origin, dests, units="imperial")
+        list_distances.append(result)
+
+    print list_distances
+    return list_distances
+    #returns raw API results: nested dictionary in a nested list of dictionaries
+      
+
+def parse_results_distance(list_distances):
+    """parse API results to pull list of distances"""
+
+
+    distance_list = []
+    for di in list_distances:
+        new_di = di['rows'][0]['elements']
+        for di in new_di:
+            distance = di['distance']['text']
+            if ',' in distance:
+                distance = distance.replace(',', '')
+            distance_list.append(distance)
+    distance_list = [str(i) for i in distance_list]
+    distance_list = [i.rstrip(' mi') for i in distance_list]
+    distance_list = [float(i) for i in distance_list]
+
+    print distance_list
+    return distance_list
+    #returns [1, 2, 3, 4...20]
+
+def parse_results_origin(list_distances):
+    """parse API results to pull list of origins"""
+
+    origin_list = []
+    for o in list_distances:
+        origin = o['origin_addresses']
+        origin_list.append(origin)
+    origin_list = [str(o[0]) for o in origin_list]
+
+    print origin_list
+    return origin_list
+    #['San Francisco, CA, USA', 'San Jose, CA, USA', 'Los Angeles, CA, USA']
+
+def parse_results_dests(list_distances):
+    """parse API results to pull list of dests"""
+
+    dests_list = []
+    for d in list_distances:
+        dest = d['destination_addresses']
+        dests_list.append(dest)
+    dests_list = [[str(i) for i in d] for d in dests_list]
+
+    print dests_list
+    return dests_list
+    #returns [['a', 'b', 'c', 'd'], ['e', 'f', 'g', 'h']]
+
+
+def concat_dest_dist(distance_list, dests_list):
+    """concat two lists together in order to sort in next function
+    1. Match up dests_list and distance_list: 
+        - create same number of sublists as dests_list
+        - add each element into a new list, but new list length should be the 
+        same as dests_list"""
+
+    i = 0
+    chunk = len(dests_list[0])
+    ordered_dist = []
+    while i < len(distance_list):
+        ordered_dist.append(distance_list[i: i+chunk])
+        i += chunk
+    dest_dist_list = []
+    for j in range(len(dests_list)):
+        dest_dist_list.append(zip(dests_list[j], ordered_dist[j]))
+
+    print dest_dist_list
+    return dest_dist_list
+    # returns [[('San Francisco, CA, USA', 5), ('Oakland, CA, USA', 40.7)],
+    # [('San Francisco, CA, USA', 12.4), ('Fremont, CA, USA', 30)]]
+
+
+def sort_distance(dest_dist_list):
+    """given a list of (dest, distance)list of tuples, sort by miles so 
+    tuple with smallest mileage appears first"""
+
+    sorted_dest_dist_list = []
+    for tup_list in dest_dist_list:
+        s = sorted(tup_list, key=lambda y: y[1])
+        sorted_dest_dist_list.append(s)
+    
+    print sorted_dest_dist_list
+    return sorted_dest_dist_list
+    # [[('Oakland, CA, USA', 40.7),('San Francisco, CA, USA', 48.5)]
+
+
+def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
+    """create a dictionary of origin and mileage value = 0
+    origin is index 0 of origin_list from function parse_results_origin"""
+
+    raw_list = zip(origin_list, sorted_dest_dist_list)
+    origin_dest_dist_dict = dict(raw_list)
+    
+
+    print origin_dest_dist_dict
+    return origin_dest_dist_dict
+    #{'SF': [(city, mi), (city, mi), (city, mi)], 'Origin': [(city, mi)]}
+
+
+def order_waypts(locations, origin_dest_dist_dict):
+    """create a dictionary of waypoints"""
+
+    stops = [locations[0]]
+    print stops
+
+    i = 0
+    while len(stops) < len(origin_dest_dist_dict):
+        dests = origin_dest_dist_dict[stops[i]]
+        next_stop = dests[0][0]
+        if next_stop not in stops:
+            stops.append(next_stop)
+        else:
+            stops.append(dests[1][0])
+        i += 1
+
+    print stops
+    return stops
+    #['San Francisco', 'Oakland', 'San Mateo']
+
+@app.route('/stops.json')
+def get_json(stops):
+    """take resulting list of tuples, and turning it into dictionary"""
+
+    stops_d = {}
+    
+    stops_d[stops[0]] = stops[1:]
+
+
+    print stops_d
+    return jsonify(stops_d=stops_d)
+    #returns {"a": 1, "b": 2, "c": 3}
+    
+
+   
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension

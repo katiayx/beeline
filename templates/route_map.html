@@ -2,6 +2,8 @@
 <html>
 <head>
   <title>Route Mapper</title>
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script src="/static/route_map.js"></script>
  <!--  <link ref="stylesheet" href="./map.css"> -->
    <style>
       html, body {
@@ -17,17 +19,13 @@
 </head> 
 <body>
   <div id="map"></div>
+  <b>Start:</b>
   <script>
-  var map;
-  function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 39.667913, lng: -99.268590},
-      zoom: 4    
-    });
-  }
+  
+
   </script>
   <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={{ mykey }}&v=3&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key={{mykey}}&v=3&callback=initMap">
     </script>
   </body>
 </html>
