@@ -25,11 +25,12 @@ def index():
                             mykey=mykey)
 
 
-@app.route('/distance')
+
+@app.route('/distance', method=['POST'])
 def get_list_locations():
     """get value from user input form, filter out any empty input"""
 
-    locations = request.args.getlist("loc") 
+    locations = request.forms.get("locations") 
     locations = filter(None, locations)
     
 
@@ -42,11 +43,15 @@ def get_list_locations():
     sorted_dest_dist_list = sort_distance(dest_dist_list)
     origin_dest_dist_dict = concat_origin_dest_dist(origin_list, sorted_dest_dist_list)
     stops = order_waypts(origin_list, origin_dest_dist_dict)
+    stops_d = get_json(stops)
 
 
     return render_template('/route_map.html',
+                            stops_d=stops_d,
                             mykey=mykey)
-    #{'origin': 0, 'stop1': 1, 'stop2': 2...}
+
+    # return jsonify (stops_d)
+    # #{'origin': 0, 'stop1': 1, 'stop2': 2...}
 
 
 
@@ -62,11 +67,13 @@ def get_api_distances(locations):
             else:
                 pass
     
+    print location_dict
     return location_dict
 
+
 def get_distance(location_dict):
-    """Make distance API call for all combinations of origin/destinations
-    returns nested dictionaries in a list, each dictionary is one set of 
+    """Make distance API call for all combinations of origin/destinations.
+    returns nested dictionaries in a list wrapped in a dictionary, each dictionary is one set of 
     origin-destinations distance information"""
 
     list_distances = []
@@ -82,7 +89,7 @@ def get_distance(location_dict):
       
 
 def parse_results_distance(list_distances):
-    """parse API results to pull list of distances"""
+    """parse API results to pull list of distances only"""
 
 
     distance_list = []
@@ -115,7 +122,7 @@ def parse_results_origin(list_distances):
     #['San Francisco, CA, USA', 'San Jose, CA, USA', 'Los Angeles, CA, USA']
 
 def parse_results_dests(list_distances):
-    """parse API results to pull list of dests"""
+    """parse API results to pull nested list of dests"""
 
     dests_list = []
     for d in list_distances:
@@ -166,8 +173,7 @@ def sort_distance(dest_dist_list):
 
 
 def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
-    """create a dictionary of origin and mileage value = 0
-    origin is index 0 of origin_list from function parse_results_origin"""
+    """create a dictionary with origin as key, list of dest/mi tuples as value"""
 
     raw_list = zip(origin_list, sorted_dest_dist_list)
     origin_dest_dist_dict = dict(raw_list)
@@ -179,7 +185,10 @@ def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
 
 
 def order_waypts(locations, origin_dest_dist_dict):
-    """create a dictionary of waypoints"""
+    """create a list of ordered stops, initially add only locations[0]
+    which is the first element in the original user-input list, because that's 
+    always going to be the start point. Then iterate through origin_dest_dist_dict
+    to grab the remaining stops"""
 
     stops = [locations[0]]
     print stops
@@ -198,9 +207,8 @@ def order_waypts(locations, origin_dest_dist_dict):
     return stops
     #['San Francisco', 'Oakland', 'San Mateo']
 
-@app.route('/stops.json')
 def get_json(stops):
-    """take resulting list of tuples, and turning it into dictionary"""
+    """jsonify stops"""
 
     stops_d = {}
     
