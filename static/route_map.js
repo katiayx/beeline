@@ -1,7 +1,5 @@
 'use strict';
 var map;
-var directionsService = new google.maps.DirectionsService();
-var directionsDisplay = new google.maps.DirectionsRenderer();
 var origin;
 var waypoints;
 var destination;
@@ -9,19 +7,23 @@ var stops_d;
 
 
 function initMap() {
+    // Instantiate a directions service.
+    var directionsService = new google.maps.DirectionsService();
     //create a map object and center on US
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 39.667913, lng: -99.268590},
       zoom: 4    
     });
+    // Create a renderer for directions and bind it to the map.
+    var directionsDisplay = new google.maps.DirectionsRenderer({map: map});
      directionsDisplay.setMap(map);
+
+    calcRoute(directionsDisplay, directionsService, map);
 }
 
 
-
-
 function getStops() {
-    $.get('/distance', 
+    $.get('/distance.json', 
       function(stops_d) {
         //JSON looks like:
         // '{
@@ -49,7 +51,7 @@ function getStops() {
 
 }
 
-function calcRoute() {
+ function calcRoute(directionsService, directionsDisplay) {
   getStops();
   var request = {
       origin: origin,
@@ -62,7 +64,5 @@ function calcRoute() {
       directionsDisplay.setDirections(result);
     }
   });
-}
 
-calcRoute();
   
