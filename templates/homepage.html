@@ -1,49 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-    <script src="http://code.jquery.com/jquery.js"></script>
+{% extends 'base.html' %}
+{% block head %}
+
+  <script src="https://maps.googleapis.com/maps/api/js?key={{mykey}}&libraries=places&callback=initAutocomplete"
+        async defer></script>
     <script src="/static/homepage.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-      div.transbox {
-        background: rgba(255, 255, 255, 0.2); 
-        border-radius: 25px;
-        vertical-align: center;
-        text-align: center;
-      }
 
-      h3 {
-        font-family: 'Open Sans';
-        font-size: 20px;
-        font-style: normal;
-        font-weight: bold;
-        line-height: 23px;
-      }
 
-      input:placeholder-shown {
-        font-family: "Open Sans";
-        font-size: 14px;
-        font-style: normal;
-        font-variant: normal;
-        font-weight: 400;
-        line-height: 23px;
+{% endblock %}
 
-      }
-
-    </style>
-</head>
+{% block content %}
 
 <body>
     <div class='site-wrapper'id="input">
         <div class='transbox col-md-4 col-md-offset-4'>
         <div class='site-wrapper-inner'>
-            <form id='user_input_form' action='/distance.json' method='post'>
+            <form id='user_input_form' action='/route_map'>
                 <h3>Starting from?</h3>
-                    <label><input id='startpt' class='autocomplete' type='text' name='loc'></input></label>
+                    <label><input id='startpt' class='autocomplete' type='text' name='loc' required></input></label>
                 <br>
                 <h3>Where would you like to visit?</h3>
-                    <label><input id='location_a' class='autocomplete' type='text' name='loc'></input></label>
+                    <label><input id='location_a' class='autocomplete' type='text' name='loc' required></input></label>
                     <label><input id='location_b' class='autocomplete' type='text' name='loc'></input></label>
                     <label><input id='location_c' class='autocomplete' type='text' name='loc'></input></label>
                     <label><input id='location_d' class='autocomplete' type='text' name='loc'></input></label>
@@ -53,14 +29,7 @@
     </div>
     </div>
   </div>
-
-</body>
-    
-
-
-  <script src="https://maps.googleapis.com/maps/api/js?key={{mykey}}&libraries=places&callback=initAutocomplete"
-        async defer></script>
 </body>
 
-</html>
+{% endblock %}
 

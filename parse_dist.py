@@ -2,7 +2,13 @@
 call to get distance information. Once API results are returned, functions to 
 help parse data into final dictionary to be jsonified"""
 
+import os
 from server import app
+import googlemaps
+from googlemaps import convert
+
+google_api_key = os.environ["GOOGLE_MAPS_SERVER_API_KEY"]  
+gmaps = googlemaps.Client(key=google_api_key)
 
 
 def get_api_distances(locations):
@@ -146,11 +152,12 @@ def order_stops(locations, origin_dest_dist_dict):
     while len(stops) < len(origin_dest_dist_dict):
         for stop in stops:
             if stop in origin_dest_dist_dict:
-                dests = stops[i]
+                dests = origin_dest_dist_dict[stop]
                 for tup in dests:
                     if tup[0] not in stops:
-                        next_stop=tup[0]
+                        next_stop = tup[0]
                         stops.append(next_stop)
     
+    print stops
     return stops
     #['San Francisco', 'Oakland', 'San Mateo']

@@ -1,68 +1,47 @@
 'use strict';
+var directionsService;
+var directionsDisplay;
 var map;
-var origin;
-var waypoints;
-var destination;
-var stops_d;
-
 
 function initMap() {
     // Instantiate a directions service.
-    var directionsService = new google.maps.DirectionsService();
+    directionsService = new google.maps.DirectionsService();
+    // Create a renderer for directions and bind it to the map.
+    directionsDisplay = new google.maps.DirectionsRenderer();
     //create a map object and center on US
     map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 39.667913, lng: -99.268590},
-      zoom: 4    
-    });
-    // Create a renderer for directions and bind it to the map.
-    var directionsDisplay = new google.maps.DirectionsRenderer({map: map});
-     directionsDisplay.setMap(map);
-
-    calcRoute(directionsDisplay, directionsService, map);
-}
-
-
-function getStops() {
-    $.get('/distance.json', 
-      function(stops_d) {
-        //JSON looks like:
-        // '{
-        //   'oakland':
-        //      ['san francisco'
-        //       'fremont'
-        //       'san mateo']
-        //  }'
-
-        console.log(stops_d);
-
-    origin = {
-      Object.keys(stops_d)[0];
-    }; 
-    // returns 'string'
-
-    destination = {
-      stops_d[origin].slice(-1);
-    };
-
-    waypoints = {
-      stops_d[origin].slice(0, -1);
-     };
+        center: {
+            lat: 39.667913,
+            lng: -99.268590
+        },
+        zoom: 4
     });
 
+    directionsDisplay.setMap(map);
+    directionsDisplay.setPanel(document.getElementById('directions-panel'));
+
+    calcRoute(directionsDisplay, directionsService);
 }
 
- function calcRoute(directionsService, directionsDisplay) {
-  getStops();
-  var request = {
-      origin: origin,
-      destination: destination,
-      waypoints: waypoints,  
-      travelMode: 'DRIVING'
+function calcRoute(directionsService, directionsDisplay) {
+    var waypts = [];
+    var waypoints = $('#waypts').val();
+    for (var i = 0; i < waypoints.length; i++) {
+        waypts.push({
+            location: waypoints[i].value,
+            stopover: true
+        });
     };
-    directionsService.route(request, function(result, status) {
-    if (status == 'OK') {
-      directionsDisplay.setDirections(result);
-    }
-  });
-
-  
+    directionsService.route({
+        origin: $('#origin').val(),
+        destination: $('#destination').val(),
+        waypoints: waypts,
+        travelMode: 'DRIVING'
+    }, function(result, status) {
+        if (status == 'OK') {
+            directionsDisplay.setDirections(result);
+        } else {
+            alert('Directions request failed due to ' + status);
+        }
+    });
+}
