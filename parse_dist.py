@@ -23,7 +23,7 @@ def get_api_distances(locations):
             else:
                 pass
     
-    print location_dict
+    # print location_dict
     return location_dict
 
 
@@ -39,7 +39,7 @@ def get_distance(location_dict):
         result = gmaps.distance_matrix(origin, dests, units="imperial")
         list_distances.append(result)
 
-    print list_distances
+    # print list_distances
     return list_distances
     #returns raw API results: nested dictionary in a nested list of dictionaries
       
@@ -60,7 +60,7 @@ def parse_results_distance(list_distances):
     distance_list = [i.rstrip(' mi') for i in distance_list]
     distance_list = [float(i) for i in distance_list]
 
-    print distance_list
+    # print distance_list
     return distance_list
     #returns [1, 2, 3, 4...20]
 
@@ -73,7 +73,7 @@ def parse_results_origin(list_distances):
         origin_list.append(origin)
     origin_list = [str(o[0]) for o in origin_list]
 
-    print origin_list
+    # print origin_list
     return origin_list
     #['San Francisco, CA, USA', 'San Jose, CA, USA', 'Los Angeles, CA, USA']
 
@@ -86,7 +86,7 @@ def parse_results_dests(list_distances):
         dests_list.append(dest)
     dests_list = [[str(i) for i in d] for d in dests_list]
 
-    print dests_list
+    # print dests_list
     return dests_list
     #returns [['a', 'b', 'c', 'd'], ['e', 'f', 'g', 'h']]
 
@@ -108,7 +108,7 @@ def concat_dest_dist(distance_list, dests_list):
     for j in range(len(dests_list)):
         dest_dist_list.append(zip(dests_list[j], ordered_dist[j]))
 
-    print dest_dist_list
+    # print dest_dist_list
     return dest_dist_list
     # returns [[('San Francisco, CA, USA', 5), ('Oakland, CA, USA', 40.7)],
     # [('San Francisco, CA, USA', 12.4), ('Fremont, CA, USA', 30)]]
@@ -123,7 +123,7 @@ def sort_distance(dest_dist_list):
         s = sorted(tup_list, key=lambda y: y[1])
         sorted_dest_dist_list.append(s)
     
-    print sorted_dest_dist_list
+    # print sorted_dest_dist_list
     return sorted_dest_dist_list
     # [[('Oakland, CA, USA', 40.7),('San Francisco, CA, USA', 48.5)]
 
@@ -135,19 +135,20 @@ def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
     origin_dest_dist_dict = dict(raw_list)
     
 
-    print origin_dest_dist_dict
+    # print origin_dest_dist_dict
     return origin_dest_dist_dict
     #{'SF': [(city, mi), (city, mi), (city, mi)], 'Origin': [(city, mi)]}
 
 
-def order_stops(locations, origin_dest_dist_dict):
+def order_stops(start, origin_dest_dist_dict):
     """create a list of ordered stops, initially add only locations[0]
     which is the first element in the original user-input list, because that's 
     always going to be the start point. Then iterate through origin_dest_dist_dict
     to grab the remaining stops"""
 
-    stops = [locations[0]]
+    stops = [start]
     print stops
+    print origin_dest_dist_dict
 
     while len(stops) < len(origin_dest_dist_dict):
         for stop in stops:

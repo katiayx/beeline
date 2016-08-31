@@ -31,8 +31,9 @@ def get_list_locations():
 
     locations = request.args.getlist("loc")
     locations = filter(None, locations)
-    print locations
-
+    start = locations[0]
+    start = start.replace('United States', 'USA')
+    print start, locations
  
     location_dict = get_api_distances(locations)
     list_distances = get_distance(location_dict)
@@ -42,7 +43,7 @@ def get_list_locations():
     dest_dist_list = concat_dest_dist(distance_list, dests_list)
     sorted_dest_dist_list = sort_distance(dest_dist_list)
     origin_dest_dist_dict = concat_origin_dest_dist(origin_list, sorted_dest_dist_list)
-    stops = order_stops(origin_list, origin_dest_dist_dict)
+    stops = order_stops(start, origin_dest_dist_dict)
 
     origin = stops[0]
     destination = stops[-1]
