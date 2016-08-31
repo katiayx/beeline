@@ -33,7 +33,7 @@ def get_list_locations():
     locations = filter(None, locations)
     print locations
 
-    
+ 
     location_dict = get_api_distances(locations)
     list_distances = get_distance(location_dict)
     distance_list = parse_results_distance(list_distances)
