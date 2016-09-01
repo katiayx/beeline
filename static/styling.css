@@ -19,16 +19,14 @@ html, body {
 }
 
 #directions-panel {
-    margin-top: 10px;
-    margin: 20px;
+    margin: 1em;
     border-width: 2px;
-    width: 20%;
     background-color: white;
-    padding: 10px;
     font-family: 'Open Sans';
     text-align: left;
     line-height: 20px;
-    float: right;
+    float: left;
+    display: inline-block;
 }
 
 
@@ -42,12 +40,6 @@ html, body {
   height: 100%;
 }
 
-/* Set black background color, white text and some padding */
-footer {
-  background-color: #555;
-  color: white;
-  padding: 15px;
-}
 
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
@@ -58,23 +50,49 @@ footer {
   .row.content {height:auto;}
 }
 
+body {
+        background: url("/static/img/R0016857.jpg") top right;
+        background-size: cover;
+}
+
 div.transbox {
-    background: rgba(255, 255, 255, 0.2); 
-    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.3); 
+    border-radius: 30px;
     vertical-align: center;
     text-align: center;
 }
 
+h1 {
+  font-family: 'Sigmar One', cursive;
+  font-size: 400%;
+  font-weight: 900;
+  line-height: 40px;
+
+}
+
+p {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 200%;
+  font-style: italic;
+}
+
 h3 {
-    font-family: 'Open Sans';
+    font-family: 'Open Sans', sans-serif;
     font-size: 20px;
-    font-style: normal;
-    font-weight: bold;
+    font-style: bold;
+    font-weight: 500;
     line-height: 23px;
+
+}
+
+h2 {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 input:placeholder-shown {
-    font-family: "Open Sans";
+    font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     font-style: normal;
     font-variant: normal;

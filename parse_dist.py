@@ -23,7 +23,7 @@ def get_api_distances(locations):
             else:
                 pass
     
-    # print location_dict
+    print location_dict
     return location_dict
 
 
@@ -39,7 +39,7 @@ def get_distance(location_dict):
         result = gmaps.distance_matrix(origin, dests, units="imperial")
         list_distances.append(result)
 
-    # print list_distances
+    print list_distances
     return list_distances
     #returns raw API results: nested dictionary in a nested list of dictionaries
       
@@ -135,20 +135,33 @@ def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
     origin_dest_dist_dict = dict(raw_list)
     
 
-    # print origin_dest_dist_dict
+    print origin_dest_dist_dict
     return origin_dest_dist_dict
     #{'SF': [(city, mi), (city, mi), (city, mi)], 'Origin': [(city, mi)]}
 
 
+def get_origin_stop(locations):
+    """ """
+
+    origin = locations[0]
+    result = gmaps.geocode(origin)
+    print result
+    start = str(result[0]['formatted_address'])
+
+    print start
+    return start
+    
 def order_stops(start, origin_dest_dist_dict):
     """create a list of ordered stops, initially add only locations[0]
     which is the first element in the original user-input list, because that's 
     always going to be the start point. Then iterate through origin_dest_dist_dict
     to grab the remaining stops"""
 
-    stops = [start]
+    # grab origin from user_input, match with api result string, append to stops list
+    stops = []
+    stops.append(start)
+    
     print stops
-    print origin_dest_dist_dict
 
     while len(stops) < len(origin_dest_dist_dict):
         for stop in stops:

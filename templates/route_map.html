@@ -31,21 +31,20 @@
 </nav>
 
 <div class="container-fluid text-center">
-  <div class="col-sm-9 map" id="map"></div>
-</div>
-<div class="col-sm-3 sidenav">
-    <div id="directions-panel"></div>
-      <h3>Your Stops</h3>
-</div>
-
-<input type='hidden' id='origin' value='{{ origin }}'></input>
-<input type='hidden' id='destination' value='{{ destination }}'></input>
-<input type='hidden' id='waypts' value='{{ waypts }}'></input>
-  <div type='hidden'>
-    {% for stop in waypts %}
-      <input type="hidden" class="stops" value='{{stop}}'></input>
-    {% endfor %}
+  <div class="row">
+    <div class="col-xs-9" id="map">Left</div>
+    <div class="col-xs-3" id="directions-panel">Right</div>
+      <!-- <h2>Journey Segements:</h2> -->
   </div>
+
+  <input type='hidden' id='origin' value='{{ origin }}'></input>
+  <input type='hidden' id='destination' value='{{ destination }}'></input>
+  <input type='hidden' id='waypts' value='{{ waypts }}'></input>
+    <div type='hidden'>
+      {% for stop in waypts %}
+        <input type="hidden" class="stops" value='{{stop}}'></input>
+      {% endfor %}
+    </div>
 
 <script src="/static/route_map.js"></script>
 

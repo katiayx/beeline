@@ -10,10 +10,11 @@
 
 {% block content %}
 
-<body>
-    <div class='site-wrapper'id="input">
-        <div class='transbox col-md-4 col-md-offset-4'>
-        <div class='site-wrapper-inner'>
+
+
+<div class='container' id="input">
+    <div class='transbox col-md-4 col-md-offset-4'>
+        <h1><b>Beeline</b></h1>
             <form id='user_input_form' action='/route_map'>
                 <h3>Starting from?</h3>
                     <label><input id='startpt' class='autocomplete' type='text' name='loc' required></input></label>
@@ -26,10 +27,8 @@
                     <br><br>
                 <label><input id='sub_btn' type='submit' value='submit'></input></label> 
           </form>
-    </div>
-    </div>
-  </div>
-</body>
+</div>
+
 
 {% endblock %}
 

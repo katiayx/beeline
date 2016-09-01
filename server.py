@@ -12,7 +12,7 @@ mykey = os.environ["GOOGLE_MAPS_BROWSER_API_KEY"]
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = "Beeline"
 
 
 @app.route('/')
@@ -31,10 +31,14 @@ def get_list_locations():
 
     locations = request.args.getlist("loc")
     locations = filter(None, locations)
-    start = locations[0]
-    start = start.replace('United States', 'USA')
-    print start, locations
- 
+    # in case autocomplete isn't used, and user input is all lower case
+    # start = locations[0].title()
+    # autocomplete doesn't provide zip, and has 'United States' which doesn't match
+    # distance api result, using if statement to strip anything other than the first 
+    # element
+    # if ',' in start:
+    #     start = start.split(",")[0]
+    
     location_dict = get_api_distances(locations)
     list_distances = get_distance(location_dict)
     distance_list = parse_results_distance(list_distances)
@@ -43,6 +47,7 @@ def get_list_locations():
     dest_dist_list = concat_dest_dist(distance_list, dests_list)
     sorted_dest_dist_list = sort_distance(dest_dist_list)
     origin_dest_dist_dict = concat_origin_dest_dist(origin_list, sorted_dest_dist_list)
+    start = get_origin_stop(locations)
     stops = order_stops(start, origin_dest_dist_dict)
 
     origin = stops[0]

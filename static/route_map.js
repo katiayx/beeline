@@ -35,26 +35,23 @@ function displayRoute() {
   }, function(result, status) {
     if (status == 'OK') {
       directionsDisplay.setDirections(result);
+      var route = result.routes[0];
+      var summaryPanel = document.getElementById('directions-panel');
+      summaryPanel.innerHTML = '';
+      // For each route, display summary information.
+      for (var i = 0; i < route.legs.length; i++) {
+        var routeSegment = i + 1;
+        summaryPanel.innerHTML += '<b><b>SEGEMENT: ' + routeSegment +
+          '</b><br>';
+        summaryPanel.innerHTML += route.legs[i].start_address + '<br><em>to</em> ' +
+          '<br>';
+        summaryPanel.innerHTML += route.legs[i].end_address + '<br><br>';
+      }
+    } else {
+      window.alert('Directions request failed due to ' + status);
     }
   });
 }
 
-
-// var route = response.routes[0];
-      //       var summaryPanel = document.getElementById('directions-panel');
-      //       summaryPanel.innerHTML = '';
-      //       // For each route, display summary information.
-      //       for (var i = 0; i < route.legs.length; i++) {
-      //         var routeSegment = i + 1;
-      //         summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-      //             '</b><br>';
-      //         summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-      //         summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-      //         summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
-      //       }
-      //     } else {
-      //       window.alert('Directions request failed due to ' + status);
-      //     }
-      //   });
-      // }
+console.log(directionsResult)
 
