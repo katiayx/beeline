@@ -3,12 +3,21 @@ var directionsDisplay;
 var directionsService;
 var map;
 
+
 function initialize() {
   directionsDisplay = new google.maps.DirectionsRenderer();
   directionsService = new google.maps.DirectionsService();
   var mapOptions = {
     zoom:4,
-    center: {lat: 39.667913, lng: -99.268590}
+    center: {lat: 39.667913, lng: -99.268590},
+    styles: [
+      {"featureType":"landscape.natural","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#e0efef"}]},
+      {"featureType":"poi","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"hue":"#1900ff"},{"color":"#c0e8e8"}]},
+      {"featureType":"road","elementType":"geometry","stylers":[{"lightness":100},{"visibility":"simplified"}]},
+      {"featureType":"road","elementType":"labels","stylers":[{"visibility":"off"}]},
+      {"featureType":"transit.line","elementType":"geometry","stylers":[{"visibility":"on"},{"lightness":700}]},
+      {"featureType":"water","elementType":"all","stylers":[{"color":"#7dcdcd"}]}
+    ]
   };
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsDisplay.setMap(map);
@@ -45,7 +54,7 @@ function displayRoute() {
           '</b><br>';
         summaryPanel.innerHTML += route.legs[i].start_address + '<br><em>to</em> ' +
           '<br>';
-        summaryPanel.innerHTML += route.legs[i].end_address + '<br>' + 
+        summaryPanel.innerHTML += route.legs[i].end_address + '<br>' +
         route.legs[i].distance.text + '<br><br>';
       }
     } else {

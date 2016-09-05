@@ -5,17 +5,24 @@
         async defer></script>
     <script src="/static/homepage.js"></script>
 
+<style>
+    body {
+            background-image: url("/static/img/R0016857.jpg");
+            width: 100%;
+            background-size: cover;
+            background-position: center center;
+    }
+</style>
+
 
 {% endblock %}
 
 {% block content %}
 
-
-
 <div class='container' id="input">
     <div class='transbox col-md-4 col-md-offset-4'>
         <h1><b>Beeline</b></h1>
-            <form id='user_input_form' action='/route_map'>
+            <form id='user_input_form' action='/route_map' method='POST'>
                 <h3>Starting from?</h3>
                     <label><input id='startpt' class='autocomplete' type='text' name='loc' required></input></label>
                 <br>
@@ -25,7 +32,7 @@
                     <label><input id='location_c' class='autocomplete' type='text' name='loc'></input></label>
                     <label><input id='location_d' class='autocomplete' type='text' name='loc'></input></label>
                     <br><br>
-                <label><input id='sub_btn' type='submit' value='submit'></input></label> 
+                <label><input id='sub_btn' type='submit' value='Submit'></input></label> 
           </form>
 </div>
 

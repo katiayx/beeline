@@ -5,7 +5,6 @@ help parse data into final dictionary to be jsonified"""
 import os
 import googlemaps
 from googlemaps import convert
-# from server import app
 
 google_api_key = os.environ["GOOGLE_MAPS_SERVER_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
@@ -33,6 +32,7 @@ def get_lists(locations):
                 pass
 
     return location_dict
+    #O(n^3)
 
 
 def get_api_distance(location_dict):
@@ -51,6 +51,9 @@ def get_api_distance(location_dict):
         list_distances.append(result)
 
     return list_distances
+    #O(n) - unpacking
+    #O(1) - list append
+    #ttl: O(n)
 
 
 def parse_results_distance(list_distances):
@@ -61,18 +64,48 @@ def parse_results_distance(list_distances):
     list_distances is the raw result returned by API call.
 
         
-        >>> list_distances = [{u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'55 mins', u'value': 3323}, u'distance': {u'text': u'52.8 mi', u'value': 84987}, u'status': u'OK'}, {u'duration': {u'text': u'45 mins', u'value': 2725}, u'distance': {u'text': u'38.0 mi', u'value': 61138}, u'status': u'OK'}]}], u'origin_addresses': [u'Alameda, CA, USA'], u'destination_addresses': [u'Vacaville, CA, USA', u'San Jose, CA, USA']}, {u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'55 mins', u'value': 3324}, u'distance': {u'text': u'52.8 mi', u'value': 84915}, u'status': u'OK'}, {u'duration': {u'text': u'1 hour 24 mins', u'value': 5029}, u'distance': {u'text': u'86.9 mi', u'value': 139790}, u'status': u'OK'}]}], u'origin_addresses': [u'Vacaville, CA, USA'], u'destination_addresses': [u'Alameda, CA, USA', u'San Jose, CA, USA']}, {u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'1 hour 25 mins', u'value': 5082}, u'distance': {u'text': u'86.8 mi', u'value': 139638}, u'status': u'OK'}, {u'duration': {u'text': u'47 mins', u'value': 2828}, u'distance': {u'text': u'38.0 mi', u'value': 61087}, u'status': u'OK'}]}], u'origin_addresses': [u'San Jose, CA, USA'], u'destination_addresses': [u'Vacaville, CA, USA', u'Alameda, CA, USA']}]
+        >>> list_distances = [{u'status': u'OK', 
+        ...     u'rows': 
+        ...          [{u'elements': 
+        ...               [{u'duration': {u'text': u'55 mins', u'value': 3323}, 
+        ...               u'distance': {u'text': u'52.8 mi', u'value': 84987}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'45 mins', u'value': 2725}, 
+        ...               u'distance': {u'text': u'38.0 mi', u'value': 61138}, 
+        ...               u'status': u'OK'}]}],
+        ...     u'origin_addresses': [u'Alameda, CA, USA'], 
+        ...     u'destination_addresses': [u'Vacaville, CA, USA', u'San Jose, CA, USA']}, 
+        ...     {u'status': u'OK', u'rows': 
+        ...         [{u'elements': 
+        ...               [{u'duration': {u'text': u'55 mins', u'value': 3324}, 
+        ...               u'distance': {u'text': u'52.8 mi', u'value': 84915}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'1 hour 24 mins', u'value': 5029}, 
+        ...               u'distance': {u'text': u'86.9 mi', u'value': 139790}, 
+        ...               u'status': u'OK'}]}], 
+        ...     u'origin_addresses': [u'Vacaville, CA, USA'], 
+        ...     u'destination_addresses': [u'Alameda, CA, USA', u'San Jose, CA, USA']}, 
+        ...     {u'status': u'OK', u'rows': 
+        ...         [{u'elements': 
+        ...               [{u'duration': {u'text': u'1 hour 25 mins', u'value': 5082}, 
+        ...               u'distance': {u'text': u'86.8 mi', u'value': 139638}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'47 mins', u'value': 2828}, 
+        ...               u'distance': {u'text': u'38.0 mi', u'value': 61087}, 
+        ...               u'status': u'OK'}]}], 
+        ...     u'origin_addresses': [u'San Jose, CA, USA'], 
+        ...     u'destination_addresses': [u'Vacaville, CA, USA', u'Alameda, CA, USA']}]
 
         >>> parse_results_distance(list_distances)
         [52.8, 38.0, 52.8, 86.9, 86.8, 38.0]
+
     """
 
-
     distance_list = []
-    for di in list_distances:
-        new_di = di['rows'][0]['elements']
-        for di in new_di:
-            distance = di['distance']['text']
+    for di in list_distances: #O(n)
+        new_di = di['rows'][0]['elements'] #O(1)
+        for di in new_di: #O(n)
+            distance = di['distance']['text'] #O(1)
             if ',' in distance:
                 distance = distance.replace(',', '')
             distance_list.append(distance)
@@ -81,13 +114,45 @@ def parse_results_distance(list_distances):
     distance_list = [float(i) for i in distance_list]
 
     return distance_list
+    #O(n^2)
 
 
 def parse_results_origin(list_distances):
     """parse API results to pull list of origins
 
 
-        >>> list_distances = [{u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'55 mins', u'value': 3323}, u'distance': {u'text': u'52.8 mi', u'value': 84987}, u'status': u'OK'}, {u'duration': {u'text': u'45 mins', u'value': 2725}, u'distance': {u'text': u'38.0 mi', u'value': 61138}, u'status': u'OK'}]}], u'origin_addresses': [u'Alameda, CA, USA'], u'destination_addresses': [u'Vacaville, CA, USA', u'San Jose, CA, USA']}, {u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'55 mins', u'value': 3324}, u'distance': {u'text': u'52.8 mi', u'value': 84915}, u'status': u'OK'}, {u'duration': {u'text': u'1 hour 24 mins', u'value': 5029}, u'distance': {u'text': u'86.9 mi', u'value': 139790}, u'status': u'OK'}]}], u'origin_addresses': [u'Vacaville, CA, USA'], u'destination_addresses': [u'Alameda, CA, USA', u'San Jose, CA, USA']}, {u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'1 hour 25 mins', u'value': 5082}, u'distance': {u'text': u'86.8 mi', u'value': 139638}, u'status': u'OK'}, {u'duration': {u'text': u'47 mins', u'value': 2828}, u'distance': {u'text': u'38.0 mi', u'value': 61087}, u'status': u'OK'}]}], u'origin_addresses': [u'San Jose, CA, USA'], u'destination_addresses': [u'Vacaville, CA, USA', u'Alameda, CA, USA']}]
+        >>> list_distances = [{u'status': u'OK', 
+        ...     u'rows': 
+        ...          [{u'elements': 
+        ...               [{u'duration': {u'text': u'55 mins', u'value': 3323}, 
+        ...               u'distance': {u'text': u'52.8 mi', u'value': 84987}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'45 mins', u'value': 2725}, 
+        ...               u'distance': {u'text': u'38.0 mi', u'value': 61138}, 
+        ...               u'status': u'OK'}]}],
+        ...     u'origin_addresses': [u'Alameda, CA, USA'], 
+        ...     u'destination_addresses': [u'Vacaville, CA, USA', u'San Jose, CA, USA']}, 
+        ...     {u'status': u'OK', u'rows': 
+        ...         [{u'elements': 
+        ...               [{u'duration': {u'text': u'55 mins', u'value': 3324}, 
+        ...               u'distance': {u'text': u'52.8 mi', u'value': 84915}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'1 hour 24 mins', u'value': 5029}, 
+        ...               u'distance': {u'text': u'86.9 mi', u'value': 139790}, 
+        ...               u'status': u'OK'}]}], 
+        ...     u'origin_addresses': [u'Vacaville, CA, USA'], 
+        ...     u'destination_addresses': [u'Alameda, CA, USA', u'San Jose, CA, USA']}, 
+        ...     {u'status': u'OK', u'rows': 
+        ...         [{u'elements': 
+        ...               [{u'duration': {u'text': u'1 hour 25 mins', u'value': 5082}, 
+        ...               u'distance': {u'text': u'86.8 mi', u'value': 139638}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'47 mins', u'value': 2828}, 
+        ...               u'distance': {u'text': u'38.0 mi', u'value': 61087}, 
+        ...               u'status': u'OK'}]}], 
+        ...     u'origin_addresses': [u'San Jose, CA, USA'], 
+        ...     u'destination_addresses': [u'Vacaville, CA, USA', u'Alameda, CA, USA']}]
+
         >>> parse_results_origin(list_distances)
         ['Alameda, CA, USA', 'Vacaville, CA, USA', 'San Jose, CA, USA']
 
@@ -106,7 +171,38 @@ def parse_results_dests(list_distances):
     """parse API results to pull nested list of dests
 
 
-        >>> list_distances = [{u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'55 mins', u'value': 3323}, u'distance': {u'text': u'52.8 mi', u'value': 84987}, u'status': u'OK'}, {u'duration': {u'text': u'45 mins', u'value': 2725}, u'distance': {u'text': u'38.0 mi', u'value': 61138}, u'status': u'OK'}]}], u'origin_addresses': [u'Alameda, CA, USA'], u'destination_addresses': [u'Vacaville, CA, USA', u'San Jose, CA, USA']}, {u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'55 mins', u'value': 3324}, u'distance': {u'text': u'52.8 mi', u'value': 84915}, u'status': u'OK'}, {u'duration': {u'text': u'1 hour 24 mins', u'value': 5029}, u'distance': {u'text': u'86.9 mi', u'value': 139790}, u'status': u'OK'}]}], u'origin_addresses': [u'Vacaville, CA, USA'], u'destination_addresses': [u'Alameda, CA, USA', u'San Jose, CA, USA']}, {u'status': u'OK', u'rows': [{u'elements': [{u'duration': {u'text': u'1 hour 25 mins', u'value': 5082}, u'distance': {u'text': u'86.8 mi', u'value': 139638}, u'status': u'OK'}, {u'duration': {u'text': u'47 mins', u'value': 2828}, u'distance': {u'text': u'38.0 mi', u'value': 61087}, u'status': u'OK'}]}], u'origin_addresses': [u'San Jose, CA, USA'], u'destination_addresses': [u'Vacaville, CA, USA', u'Alameda, CA, USA']}]
+        >>> list_distances = [{u'status': u'OK', 
+        ...     u'rows': 
+        ...          [{u'elements': 
+        ...               [{u'duration': {u'text': u'55 mins', u'value': 3323}, 
+        ...               u'distance': {u'text': u'52.8 mi', u'value': 84987}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'45 mins', u'value': 2725}, 
+        ...               u'distance': {u'text': u'38.0 mi', u'value': 61138}, 
+        ...               u'status': u'OK'}]}],
+        ...     u'origin_addresses': [u'Alameda, CA, USA'], 
+        ...     u'destination_addresses': [u'Vacaville, CA, USA', u'San Jose, CA, USA']}, 
+        ...     {u'status': u'OK', u'rows': 
+        ...         [{u'elements': 
+        ...               [{u'duration': {u'text': u'55 mins', u'value': 3324}, 
+        ...               u'distance': {u'text': u'52.8 mi', u'value': 84915}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'1 hour 24 mins', u'value': 5029}, 
+        ...               u'distance': {u'text': u'86.9 mi', u'value': 139790}, 
+        ...               u'status': u'OK'}]}], 
+        ...     u'origin_addresses': [u'Vacaville, CA, USA'], 
+        ...     u'destination_addresses': [u'Alameda, CA, USA', u'San Jose, CA, USA']}, 
+        ...     {u'status': u'OK', u'rows': 
+        ...         [{u'elements': 
+        ...               [{u'duration': {u'text': u'1 hour 25 mins', u'value': 5082}, 
+        ...               u'distance': {u'text': u'86.8 mi', u'value': 139638}, 
+        ...               u'status': u'OK'}, 
+        ...               {u'duration': {u'text': u'47 mins', u'value': 2828}, 
+        ...               u'distance': {u'text': u'38.0 mi', u'value': 61087}, 
+        ...               u'status': u'OK'}]}], 
+        ...     u'origin_addresses': [u'San Jose, CA, USA'], 
+        ...     u'destination_addresses': [u'Vacaville, CA, USA', u'Alameda, CA, USA']}]
+
         >>> parse_results_dests(list_distances)
         [['Vacaville, CA, USA', 'San Jose, CA, USA'], ['Alameda, CA, USA', 'San Jose, CA, USA'], ['Vacaville, CA, USA', 'Alameda, CA, USA']]
     """
@@ -127,7 +223,10 @@ def concat_dest_dist(distance_list, dests_list):
         same as dests_list
 
         >>> distance_list = [9.9, 20.9, 9.0, 16.0, 16.6, 20.9]
-        >>> dests_list = [['Portland, OR, USA', 'Troutdale, OR 97060, USA'],['Vancouver, WA, USA', 'Troutdale, OR 97060, USA'],['Portland, OR, USA', 'Vancouver, WA, USA']]
+        >>> dests_list = [['Portland, OR, USA', 'Troutdale, OR 97060, USA'],
+        ...     ['Vancouver, WA, USA', 'Troutdale, OR 97060, USA'],
+        ...     ['Portland, OR, USA', 'Vancouver, WA, USA']]
+
         >>> concat_dest_dist(distance_list, dests_list) 
         [[('Portland, OR, USA', 9.9), ('Troutdale, OR 97060, USA', 20.9)], [('Vancouver, WA, USA', 9.0), ('Troutdale, OR 97060, USA', 16.0)], [('Portland, OR, USA', 16.6), ('Vancouver, WA, USA', 20.9)]]
 
@@ -151,7 +250,10 @@ def sort_distance(dest_dist_list):
     tuple with smallest mileage appears first
 
 
-        >>> dest_dist_list = [[('Troutdale, OR 97060, USA', 20.9), ('Portland, OR, USA', 9.9)],[('Troutdale, OR 97060, USA', 16.0), ('Vancouver, WA, USA', 9.0)],[('Vancouver, WA, USA', 20.9), ('Portland, OR, USA', 16.6)]]
+        >>> dest_dist_list = [[('Troutdale, OR 97060, USA', 20.9), ('Portland, OR, USA', 9.9)],
+        ...     [('Troutdale, OR 97060, USA', 16.0), ('Vancouver, WA, USA', 9.0)],
+        ...     [('Vancouver, WA, USA', 20.9), ('Portland, OR, USA', 16.6)]]
+
         >>> sort_distance(dest_dist_list)
         [[('Portland, OR, USA', 9.9), ('Troutdale, OR 97060, USA', 20.9)], [('Vancouver, WA, USA', 9.0), ('Troutdale, OR 97060, USA', 16.0)], [('Portland, OR, USA', 16.6), ('Vancouver, WA, USA', 20.9)]]
     
@@ -170,7 +272,9 @@ def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
 
 
         >>> origin_list = ['Vancouver, WA, USA', 'Portland, OR, USA', 'Troutdale, OR 97060, USA']
-        >>> sorted_dest_dist_list = [[('Portland, OR, USA', 9.9), ('Troutdale, OR 97060, USA', 20.9)],[('Vancouver, WA, USA', 9.0), ('Troutdale, OR 97060, USA', 16.0)],[('Portland, OR, USA', 16.6), ('Vancouver, WA, USA', 20.9)]]
+        >>> sorted_dest_dist_list = [[('Portland, OR, USA', 9.9), ('Troutdale, OR 97060, USA', 20.9)],
+        ...     [('Vancouver, WA, USA', 9.0), ('Troutdale, OR 97060, USA', 16.0)],
+        ...     [('Portland, OR, USA', 16.6), ('Vancouver, WA, USA', 20.9)]]
 
         >>> concat_origin_dest_dist(origin_list, sorted_dest_dist_list)
         {'Vancouver, WA, USA': [('Portland, OR, USA', 9.9), ('Troutdale, OR 97060, USA', 20.9)], 'Troutdale, OR 97060, USA': [('Portland, OR, USA', 16.6), ('Vancouver, WA, USA', 20.9)], 'Portland, OR, USA': [('Vancouver, WA, USA', 9.0), ('Troutdale, OR 97060, USA', 16.0)]}
@@ -188,7 +292,6 @@ def get_origin_stop(locations):
 
     origin = locations[0]
     result = gmaps.geocode(origin)
-    print result
     start = str(result[0]['formatted_address'])
 
     return start
@@ -200,7 +303,10 @@ def order_stops(start, origin_dest_dist_dict):
     to grab the remaining stops
 
         >>> start = 'Portland, OR, USA'
-        >>> origin_dest_dist_dict = {'Vancouver, WA, USA': [('Portland, OR, USA', 9.9), ('Troutdale, OR 97060, USA', 20.9)],'Troutdale, OR 97060, USA': [('Portland, OR, USA', 16.6), ('Vancouver, WA, USA', 20.9)],'Portland, OR, USA': [('Vancouver, WA, USA', 9.0), ('Troutdale, OR 97060, USA', 16.0)]}
+        >>> origin_dest_dist_dict = {'Vancouver, WA, USA': [('Portland, OR, USA', 9.9), ('Troutdale, OR 97060, USA', 20.9)],
+        ...     'Troutdale, OR 97060, USA': [('Portland, OR, USA', 16.6), ('Vancouver, WA, USA', 20.9)],
+        ...     'Portland, OR, USA': [('Vancouver, WA, USA', 9.0), ('Troutdale, OR 97060, USA', 16.0)]}
+        
         >>> order_stops(start, origin_dest_dist_dict)
         ['Portland, OR, USA', 'Vancouver, WA, USA', 'Troutdale, OR 97060, USA']
     
@@ -233,10 +339,8 @@ def order_stops(start, origin_dest_dist_dict):
 # DOCTESTS
 
 if __name__ == "__main__":
-    import doctest
+    from doctest import testmod
+    if testmod().failed == 0:
+        app.debug = True
 
-    print
-    result = doctest.testmod()
-    if not result.failed:
-        print "ALL TESTS PASSED, YEAH!"
-    print
+        

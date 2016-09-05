@@ -25,22 +25,15 @@ def render_homepage():
                             mykey=mykey)
 
 
-@app.route('/route_map')
+@app.route('/route_map', methods=['POST'])
 def get_list_locations():
     """get value from user input form, filter out any empty input
     call helper functions to call distance API, parse returned results
     compare distance and return list of stops"""
 
-    locations = request.args.getlist("loc")
+    locations = request.form.getlist("loc")
     locations = filter(None, locations)
-    print locations
-    # in case autocomplete isn't used, and user input is all lower case
-    # start = locations[0].title()
-    # autocomplete doesn't provide zip, and has 'United States' which doesn't match
-    # distance api result, using if statement to strip anything other than the first 
-    # element
-    # if ',' in start:
-    #     start = start.split(",")[0]
+    print request.form
     
     location_dict = get_lists(locations)
     list_distances = get_api_distance(location_dict)

@@ -1,10 +1,20 @@
 """"""
 
-from unittest import Testcase
+import unittest
+from unittest import TestCase
+import doctest
 from server import app
-from parse_dist import *
+import parse_dist
 
-class FlaskTests(Testcase):
+
+def load_tests(loader, tests, ignore):
+    """run file-based doctests."""
+
+    tests.addTests(doctest.DocTestSuite(parse_dist))
+    return tests
+
+
+class FlaskTests(TestCase):
     """Flask tests to test routes are correctly connected"""
 
     def setUp(self):
@@ -18,24 +28,23 @@ class FlaskTests(Testcase):
 
         result = self.client.get('/')
         self.assertEqual(result.status_code, 200)
-        self.assertIn('<h1>Beeline</h1>',
-                        '<h3>Starting from?</h3>',
+        self.assertIn('<h3>Starting from?</h3>',
                         result.data)
 
     def test_route_map(self):
         """Test location inputs are being passed to the right route"""
 
-        result = self.client.get('/route_map',
+        result = self.client.post('/route_map',
                                 data=
-                                    {'loc': 
+                                    {'loc':
                                         ['San Francisco', 
                                         'Los Angeles', 
                                         'Oakland', 
                                         'Palo Alto',
-                                        'Mission Viejo']
+                                        'Mission Viejo'],
                                     })
         self.assertEqual(result.status_code, 200)
-        self.assertIn(#some text from rendered route_map.html,
+        self.assertIn('New Search',
                         result.data)
         print result.data
 
