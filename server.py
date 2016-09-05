@@ -4,15 +4,17 @@ from flask import (Flask, render_template, redirect, request, flash, session, js
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 import json
-from parse_dist import *
 
 mykey = os.environ["GOOGLE_MAPS_BROWSER_API_KEY"]
-
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "Beeline"
+app.secret_key = "ABC"
+
+from parse_dist import(get_lists, get_api_distance, parse_results_distance, parse_results_origin, parse_results_dests,
+concat_dest_dist, sort_distance, concat_origin_dest_dist, get_origin_stop, order_stops)
+
 
 
 @app.route('/')
@@ -31,6 +33,7 @@ def get_list_locations():
 
     locations = request.args.getlist("loc")
     locations = filter(None, locations)
+    print locations
     # in case autocomplete isn't used, and user input is all lower case
     # start = locations[0].title()
     # autocomplete doesn't provide zip, and has 'United States' which doesn't match
@@ -39,8 +42,8 @@ def get_list_locations():
     # if ',' in start:
     #     start = start.split(",")[0]
     
-    location_dict = get_api_distances(locations)
-    list_distances = get_distance(location_dict)
+    location_dict = get_lists(locations)
+    list_distances = get_api_distance(location_dict)
     distance_list = parse_results_distance(list_distances)
     origin_list = parse_results_origin(list_distances)
     dests_list = parse_results_dests(list_distances)
@@ -63,7 +66,6 @@ def get_list_locations():
     # origin = San Francisco, CA, USA 
     # destination = Mountain View, CA, USA 
     # waypts = ['Oakland, CA, USA', 'Orinda, CA, USA', 'San Mateo, CA, USA']  
-
 
 
 if __name__ == "__main__":

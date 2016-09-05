@@ -45,7 +45,8 @@ function displayRoute() {
           '</b><br>';
         summaryPanel.innerHTML += route.legs[i].start_address + '<br><em>to</em> ' +
           '<br>';
-        summaryPanel.innerHTML += route.legs[i].end_address + '<br><br>';
+        summaryPanel.innerHTML += route.legs[i].end_address + '<br>' + 
+        route.legs[i].distance.text + '<br><br>';
       }
     } else {
       window.alert('Directions request failed due to ' + status);
@@ -53,5 +54,5 @@ function displayRoute() {
   });
 }
 
-console.log(directionsResult)
+
 

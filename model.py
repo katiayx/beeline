@@ -1,6 +1,4 @@
 """Models and database functions for HB project."""
-import heapq
-import time
 from flask_sqlalchemy import SQLAlchemy
 
 # This is the connection to the PostgreSQL database; we're getting this through
@@ -38,7 +36,7 @@ class Route(db.Model):
     route_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), 
         nullable=False)
-    origin = db.Column(db.String(100))
+    origin = db.Column(db.String(500))
     num_stops = db.Column(db.Integer)
 
     def __repr__(self):
@@ -60,7 +58,7 @@ class Stop(db.Model):
     __tablename__ = "stops"
 
     stop_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    stop = db.Column(db.String(100))
+    stop = db.Column(db.String(500))
 
 
 ##############################################################################
@@ -73,9 +71,9 @@ class Position(db.Model):
     __tablename__ = "positions"
 
     position_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    route_id = db.Column(db.interger, db.ForeignKey('routes.route_id'), nullable=False)
-    stop_id = db.Column(db.interger, db.ForeignKey('stops.stop_id'), nullable=False)
-    position = db.Column(db.interger)
+    route_id = db.Column(db.Integer, db.ForeignKey('routes.route_id'), nullable=False)
+    stop_id = db.Column(db.Integer, db.ForeignKey('stops.stop_id'), nullable=False)
+    position = db.Column(db.Integer)
 
     stop = db.relationship('Stop', backref='positions')
     route = db.relationship('Route', backref='positions')
@@ -88,14 +86,14 @@ class Position(db.Model):
             self.position_id, self.route_id, self.stop_id, self.position)
 
 
-##############################################################################
+ ##############################################################################
 # Helper functions
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our PostgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///routes'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///beeline'
 #    app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
