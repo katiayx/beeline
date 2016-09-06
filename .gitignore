@@ -2,3 +2,4 @@
 *secret.*
 *.pyc
 .DS_Store
+/htmlcov/

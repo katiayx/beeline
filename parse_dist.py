@@ -303,6 +303,7 @@ def get_origin_stop(locations):
     return start
     #O(1)
     
+    
 def order_stops(start, origin_dest_dist_dict):
     """create a list of ordered stops, initially add only locations[0]
     which is the first element in the original user-input list, because that's 
