@@ -31,8 +31,8 @@ html, body {
 #map {
     height: 100%;
     float: left;
-    width: 70%;
-    height: 750px;
+    width: 80%;
+    height: 1000px;
 }
 
 #directions-panel {
@@ -96,7 +96,7 @@ h2 {
 
 input:placeholder-shown {
     font-family: 'Open Sans', sans-serif;
-    font-size: 14px;
+    font-size: 18px;
     font-style: normal;
     font-variant: normal;
     font-weight: 400;

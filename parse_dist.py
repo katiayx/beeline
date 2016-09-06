@@ -165,6 +165,7 @@ def parse_results_origin(list_distances):
     origin_list = [str(o[0]) for o in origin_list]
 
     return origin_list
+    #O(n)
 
 
 def parse_results_dests(list_distances):
@@ -214,6 +215,7 @@ def parse_results_dests(list_distances):
     dests_list = [[str(i) for i in d] for d in dests_list]
 
     return dests_list
+    #O(n)
 
 
 def concat_dest_dist(distance_list, dests_list):
@@ -243,6 +245,8 @@ def concat_dest_dist(distance_list, dests_list):
         dest_dist_list.append(zip(dests_list[j], ordered_dist[j]))
 
     return dest_dist_list
+    #O(n)
+
 
 
 def sort_distance(dest_dist_list):
@@ -265,6 +269,7 @@ def sort_distance(dest_dist_list):
         sorted_dest_dist_list.append(s)
     
     return sorted_dest_dist_list
+    #O(n)
 
 
 def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
@@ -285,6 +290,7 @@ def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
     origin_dest_dist_dict = dict(raw_list)
     
     return origin_dest_dist_dict
+    #O(n^2)
 
 
 def get_origin_stop(locations):
@@ -295,6 +301,7 @@ def get_origin_stop(locations):
     start = str(result[0]['formatted_address'])
 
     return start
+    #O(1)
     
 def order_stops(start, origin_dest_dist_dict):
     """create a list of ordered stops, initially add only locations[0]
@@ -319,20 +326,21 @@ def order_stops(start, origin_dest_dist_dict):
 
     # while stops list is shorter than concanated dictionary, go thought each stop
     while len(stops) < len(origin_dest_dist_dict):
-        for stop in stops:
+        for stop in stops: #O(n)
             # if city in stop is in dictionary, then new variable dests is 
-            if stop in origin_dest_dist_dict:
+            if stop in origin_dest_dist_dict: #O(1)
                 # equal to the values of dict[city]
-                dests = origin_dest_dist_dict[stop]
+                dests = origin_dest_dist_dict[stop] #O(1)
                 # iterate through values - list of tuples
-                for tup in dests:
+                for tup in dests: #O(n)
                     # add tuple at city index to stops list if city is not in stops list
-                    if tup[0] not in stops:
+                    if tup[0] not in stops: #O(1)
                         next_stop = tup[0]
                         stops.append(next_stop)
 
     
     return stops
+    #O(n^2)
 
 
 ###################################################################################################################################

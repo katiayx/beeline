@@ -60,6 +60,12 @@ class Stop(db.Model):
     stop_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     stop = db.Column(db.String(500))
 
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Stop stop_id=%s stop=%s>" % (self.stop_id, 
+            self.stop)
+
 
 ##############################################################################
 # setting up Position class: each stop has a unique position within each route 
