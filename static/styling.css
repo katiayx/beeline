@@ -31,19 +31,23 @@ html, body {
 #map {
     height: 100%;
     float: left;
-    width: 80%;
-    height: 1000px;
+    width: 75%;
+    height: 750px;
 }
 
 #directions-panel {
     margin: 1em;
-    border-width: 2px;
+    border-width: 1px;
     background-color: white;
     font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
     text-align: left;
-    line-height: 20px;
     float: left;
     display: inline-block;
+}
+
+.col-xs-3 {
+  width: 20%;
 }
 
 

@@ -33,7 +33,6 @@ def get_list_locations():
 
     locations = request.form.getlist("loc")
     locations = filter(None, locations)
-    print request.form
     
     location_dict = get_lists(locations)
     list_distances = get_api_distance(location_dict)
@@ -64,9 +63,9 @@ def get_list_locations():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    # app.debug = True
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(host="0.0.0.0")
