@@ -30,8 +30,8 @@ Beeline is a itinerary-building app that helps vacationers find the optimal driv
 ## <a name="tech-stack"></a>Technology Stack
 
 **Application:** Python, Flask, Jinja, Google Maps Services Python library 
-**Front-End**: HTML/CSS, Bootstrap, JQuery, JavaScript  
-**APIs:** Google Maps Distance Matrix API, Google Places API Web Service, Google Maps Directions API, Google Maps Geocoding API 
+**Front-End:** HTML/CSS, Bootstrap, JQuery, JavaScript  
+**APIs:** Google Maps Distance Matrix API, Google Places API Web Service, Google Maps Directions API, Google Maps Geocoding API, Google Maps Javascript API 
 
 
 
