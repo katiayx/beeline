@@ -64,7 +64,7 @@ Install the dependencies
 In a new Terminal run App
 ```
 > python server.py
-
+```
 
 
 Author: [Katia Wu](https://www.linkedin.com/in/katiayx) 
