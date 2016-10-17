@@ -64,16 +64,6 @@ Install the dependencies
 In a new Terminal run App
 ```
 > python server.py
-```
-
-## <a name="future"></a>Looking Ahead
-###Algorithm Refinement
-- Minimizing backtracking
-- Explore optimization using networkx library single-source shortest path or A* algorithm
-
-###Features
-- User can login in and save their route
-- Database to stored searched-routes
 
 
 
