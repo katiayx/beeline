@@ -34,7 +34,7 @@ Beeline is a itinerary-building app that helps vacationers find the optimal driv
 
 **Front-End:** HTML/CSS, Bootstrap, JQuery, JavaScript  
 
-**APIs:** Google Maps Distance Matrix API, Google Places API Web Service, Google Maps Directions API, Google Maps Geocoding API, Google Maps Javascript API 
+**APIs:** Google Maps Distance Matrix API, Google Places API Web Service, Google Maps Directions API, Google Maps Geocoding API, Google Maps Javascript API
 
 
 
@@ -49,7 +49,7 @@ Need TWO Google Maps API keys: Browser Key and Server Key
 https://console.developers.google.com
 Make sure to store keys in a secrets.sh and put the file in your `.gitignore`.
 
-Create a virtual environment 
+Create a virtual environment
 
 ```
 > virtualenv env
@@ -68,6 +68,4 @@ In a new Terminal run App
 ```
 
 
-Author: [Katia Wu](https://www.linkedin.com/in/katiayx) 
-  
- 
+Author: [Katia Wu](https://www.linkedin.com/in/katiayx)
