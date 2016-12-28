@@ -30,7 +30,6 @@ Beeline is a itinerary-building app that helps vacationers find the optimal driv
 **APIs:** Google Maps Distance Matrix API, Google Places API Web Service, Google Maps Directions API, Google Maps Geocoding API, Google Maps Javascript API
 
 
-
 ## <a name='testing'></a>Testing Coverage
 
 <img src="static/img/coverage.png" height="350">
