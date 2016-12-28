@@ -33,7 +33,7 @@ def get_list_locations():
 
     locations = request.form.getlist("loc")
     locations = filter(None, locations)
-    
+
     location_dict = get_lists(locations)
     list_distances = get_api_distance(location_dict)
     distance_list = parse_results_distance(list_distances)
@@ -55,9 +55,9 @@ def get_list_locations():
                             waypts=waypts,
                             mykey=mykey)
     # stops = ['San Francisco, CA, USA', 'Oakland, CA, USA', 'Orinda, CA, USA', 'San Mateo, CA, USA', 'Mountain View, CA, USA']
-    # origin = San Francisco, CA, USA 
-    # destination = Mountain View, CA, USA 
-    # waypts = ['Oakland, CA, USA', 'Orinda, CA, USA', 'San Mateo, CA, USA']  
+    # origin = San Francisco, CA, USA
+    # destination = Mountain View, CA, USA
+    # waypts = ['Oakland, CA, USA', 'Orinda, CA, USA', 'San Mateo, CA, USA']
 
 
 if __name__ == "__main__":
