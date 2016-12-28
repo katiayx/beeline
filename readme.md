@@ -13,7 +13,6 @@ Beeline is a itinerary-building app that helps vacationers find the optimal driv
 - [Technology Stack](#tech-stack)
 - [Testing Coverage](#testing)
 - [How To Run Locally](#run-local)
-- [Looking Ahead](#future)
 
 ## <a name='features'></a>Features
 
