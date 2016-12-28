@@ -6,6 +6,8 @@ final Hackbright project
 
 Beeline is a itinerary-building app that helps vacationers find the optimal driving route for up to 5 destinations, including the origin. "Optimal" is defined as always choosing the nearest stop in relation to user's current location.
 
+![demo_gif](http://g.recordit.co/cDCTK6bLB8.gif)
+
 ### Table of Contents
 - [Features](#features)
 - [Technology Stack](#tech-stack)
@@ -18,7 +20,6 @@ Beeline is a itinerary-building app that helps vacationers find the optimal driv
 - Location Submission (up to 5 incl. origin)
 - Autocomplete Location Submissions**
 - Itinerary Algorithm Based on Finding-Nearest-Stop-to-Current-Location**
-![demo_gif](http://g.recordit.co/cDCTK6bLB8.gif)
 
 
 ## <a name="tech-stack"></a>Technology Stack
