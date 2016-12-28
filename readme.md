@@ -18,8 +18,8 @@ Beeline is a itinerary-building app that helps vacationers find the optimal driv
 ## <a name='features'></a>Features
 
 - Location Submission (up to 5 incl. origin)
-- Autocomplete Location Submissions**
-- Itinerary Algorithm Based on Finding-Nearest-Stop-to-Current-Location**
+- Autocomplete Location Submissions
+- Itinerary Algorithm Based on Finding-Nearest-Stop-to-Current-Location
 
 
 ## <a name="tech-stack"></a>Technology Stack
