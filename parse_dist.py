@@ -6,7 +6,7 @@ import os
 import googlemaps
 from googlemaps import convert
 
-google_api_key = os.environ.get["GOOGLE_MAPS_SERVER_API_KEY"]
+google_api_key = os.environ.get("GOOGLE_MAPS_SERVER_API_KEY")
 gmaps = googlemaps.Client(key=google_api_key)
 
 

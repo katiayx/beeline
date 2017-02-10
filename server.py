@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 import json
 
-mykey = os.environ.get["GOOGLE_MAPS_BROWSER_API_KEY"]
+mykey = os.environ.get("GOOGLE_MAPS_BROWSER_API_KEY")
 
 app = Flask(__name__)
 
