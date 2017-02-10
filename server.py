@@ -7,6 +7,8 @@ import json
 
 mykey = os.environ.get("GOOGLE_MAPS_BROWSER_API_KEY")
 
+# mykey = os.environ["GOOGLE_MAPS_BROWSER_API_KEY"]
+
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -67,6 +69,8 @@ if __name__ == "__main__":
 
     # Use the DebugToolbar
     # DebugToolbarExtension(app)
+    
+    # app.run(host="0.0.0.0")
 
     DEBUG = "NO_DEBUG" not in os.environ
     PORT = int(os.environ.get("PORT", 5000))
