@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 import json
 
-mykey = os.environ["GOOGLE_MAPS_BROWSER_API_KEY"]
+mykey = os.environ.get["GOOGLE_MAPS_BROWSER_API_KEY"]
 
 app = Flask(__name__)
 
@@ -68,4 +68,7 @@ if __name__ == "__main__":
     # Use the DebugToolbar
     # DebugToolbarExtension(app)
 
-    app.run(host="0.0.0.0")
+    DEBUG = "NO_DEBUG" not in os.environ
+    PORT = int(os.environ.get("PORT", 5000))
+
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
