@@ -4,10 +4,9 @@ from flask import (Flask, render_template, redirect, request, flash, session, js
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 import json
+from werkzeug.contrib.profiler import ProfilerMiddleware
 
 mykey = os.environ.get("GOOGLE_MAPS_BROWSER_API_KEY")
-
-# mykey = os.environ["GOOGLE_MAPS_BROWSER_API_KEY"]
 
 app = Flask(__name__)
 
@@ -63,16 +62,11 @@ def get_list_locations():
 
 
 if __name__ == "__main__":
-    # We have to set debug=True here, since it has to be True at the
-    # point that we invoke the DebugToolbarExtension
-    # app.debug = True
-
-    # Use the DebugToolbar
-    # DebugToolbarExtension(app)
+    app.config['PROFILE'] = True
+    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[50])
     
-    # app.run(host="0.0.0.0")
 
-    DEBUG = "NO_DEBUG" not in os.environ
+    # DEBUG = "NO_DEBUG" not in os.environ
     PORT = int(os.environ.get("PORT", 5000))
 
-    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
+    app.run(host="0.0.0.0", port=PORT, debug=True)

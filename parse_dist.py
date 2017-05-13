@@ -15,7 +15,7 @@ def get_lists(locations):
     """create origin-destination lists for API call
 
 
-    user input is a list of locations. Need to create dictionary key:pairs pairs
+    user input is a list of locations. Need to create dictionary key:value pairs
     for each location as origin, and rest as destinations.
 
         >>> get_lists(['Portland, OR', 'Vancouver, WA', 'Troutdale'])
@@ -32,6 +32,7 @@ def get_lists(locations):
             else:
                 pass
 
+    # print "INPUT FOR API CALL", location_dict
     return location_dict
     #O(n^3)
 
@@ -51,6 +52,7 @@ def get_api_distance(location_dict):
         result = gmaps.distance_matrix(origin, dests, units="imperial")
         list_distances.append(result)
 
+    # print "RETURNED API", list_distances
     return list_distances
     #O(n) - unpacking
     #O(1) - list append
@@ -114,6 +116,7 @@ def parse_results_distance(list_distances):
     distance_list = [i.rstrip(' mi') for i in distance_list]
     distance_list = [float(i) for i in distance_list]
 
+    # print "DISTANCE LIST", distance_list
     return distance_list
     #O(n^2)
 
@@ -165,6 +168,7 @@ def parse_results_origin(list_distances):
         origin_list.append(origin)
     origin_list = [str(o[0]) for o in origin_list]
 
+    # print "ORIGIN LIST", origin_list
     return origin_list
     #O(n)
 
@@ -215,6 +219,7 @@ def parse_results_dests(list_distances):
         dests_list.append(dest)
     dests_list = [[str(i) for i in d] for d in dests_list]
 
+    # print "DEST PAIRS",dests_list
     return dests_list
     #O(n)
 
@@ -245,6 +250,7 @@ def concat_dest_dist(distance_list, dests_list):
     for j in range(len(dests_list)):
         dest_dist_list.append(zip(dests_list[j], ordered_dist[j]))
 
+    # print "ORIGIN-DESTS", dest_dist_list 
     return dest_dist_list
     #O(n)
 
@@ -269,6 +275,7 @@ def sort_distance(dest_dist_list):
         s = sorted(tup_list, key=lambda y: y[1])
         sorted_dest_dist_list.append(s)
 
+    # print "SORTED",sorted_dest_dist_list
     return sorted_dest_dist_list
     #O(n)
 
@@ -290,6 +297,7 @@ def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
     raw_list = zip(origin_list, sorted_dest_dist_list)
     origin_dest_dist_dict = dict(raw_list)
 
+    # print "SORTED DICT", origin_dest_dist_dict
     return origin_dest_dist_dict
     #O(n^2)
 
@@ -303,6 +311,7 @@ def get_origin_stop(locations):
     start = str(result[0]['formatted_address'])
 
 
+    # print "ORIGIN",start
     return start
     #O(1)
 
@@ -343,6 +352,7 @@ def order_stops(start, origin_dest_dist_dict):
                         stops.append(next_stop)
 
 
+    # print "ORDERED STOPS",stops
     return stops
     #O(n^2)
 
