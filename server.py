@@ -5,6 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 import json
 from werkzeug.contrib.profiler import ProfilerMiddleware
+from model import connect_to_db, db, Location, Distance
 
 mykey = os.environ.get("GOOGLE_MAPS_BROWSER_API_KEY")
 
@@ -13,7 +14,7 @@ app = Flask(__name__)
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
 
-from parse_dist import(get_lists, get_api_distance, parse_results_distance, parse_results_origin, parse_results_dests,
+from parse_dist import(create_api_request, call_distance_api, parse_results_distance, parse_results_origin, parse_results_dests,
 concat_dest_dist, sort_distance, concat_origin_dest_dist, get_origin_stop, order_stops)
 
 
@@ -32,18 +33,20 @@ def get_list_locations():
     call helper functions to call distance API, parse returned results
     compare distance and return list of stops"""
 
-    locations = request.form.getlist("loc")
-    locations = filter(None, locations)
+    user_input = request.form.getlist("loc")
+    user_input = filter(None, user_input)
+    print "user_input ", user_input
+    
 
-    location_dict = get_lists(locations)
-    list_distances = get_api_distance(location_dict)
+    api_request = create_api_request(user_input)
+    list_distances = call_distance_api(api_request)
     distance_list = parse_results_distance(list_distances)
     origin_list = parse_results_origin(list_distances)
     dests_list = parse_results_dests(list_distances)
     dest_dist_list = concat_dest_dist(distance_list, dests_list)
     sorted_dest_dist_list = sort_distance(dest_dist_list)
     origin_dest_dist_dict = concat_origin_dest_dist(origin_list, sorted_dest_dist_list)
-    start = get_origin_stop(locations)
+    start = get_origin_stop(user_input)
     stops = order_stops(start, origin_dest_dist_dict)
 
     origin = stops[0]
@@ -60,6 +63,40 @@ def get_list_locations():
     # destination = Mountain View, CA, USA
     # waypts = ['Oakland, CA, USA', 'Orinda, CA, USA', 'San Mateo, CA, USA']
 
+
+def search_database():
+    """Check if distance information already exists in db for inputed locations """
+
+    user_input = request.form.getlist("loc")
+    user_input = filter(None, user_input)
+
+
+    #create location pairs out of input location list
+    input_pairs = []
+    for i in range(len(user_input) - 1):
+        for j in range(i + 1, len(user_input)):
+            input_pairs.append((user_input[i], user_input[j]))
+
+    print "input_pairs ", input_pairs
+    #[(San Francisco, CA USA, Oakland, CA USA), (Oakland, CA USA, San Leandro, CA USA)]
+
+    #look up start and destination in db
+    
+    for citypairs in input_pairs:
+        start_name = citypairs[0]
+        destination_name = citypairs[1]
+        start = Start.query.filter_by(name=start_name).first()
+        destination = Destination.query.filter_by(name=destination_name).first()
+
+        #if both start and destination are in the database
+        if start and destination:
+            distance = Distance.query.filter_by(start_id=start_id, destination_id=destination_id).first()
+
+
+
+        if not start:
+            start = Start(name=start_name)
+            destination = Destination(name=destination_name)
 
 if __name__ == "__main__":
     app.config['PROFILE'] = True

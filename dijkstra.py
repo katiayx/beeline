@@ -6,37 +6,38 @@ import os
 import googlemaps
 from googlemaps import convert
 
-
 google_api_key = os.environ.get("GOOGLE_MAPS_SERVER_API_KEY")
+# google_api_key = os.environ["GOOGLE_MAPS_SERVER_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
 
 
-def create_api_request(user_input):
+def create_api_request(locations):
     """create origin-destination lists for API call
 
 
     user input is a list of locations. Need to create dictionary key:value pairs
     for each location as origin, and rest as destinations.
 
-        >>> create_api_request(['Portland, OR', 'Vancouver, WA', 'Troutdale'])
-        {'Vancouver, WA': ['Portland, OR', 'Troutdale'], 'Portland, OR': ['Troutdale']}
+        >>> get_lists(['Portland, OR', 'Vancouver, WA', 'Troutdale'])
+        {'Vancouver, WA': ['Portland, OR', 'Troutdale'], 'Portland, OR': ['Vancouver, WA', 'Troutdale'], 'Troutdale': ['Portland, OR', 'Vancouver, WA']}
 
     """
 
-    api_request = {}
-    
-    i = 0
-    while i < len(user_input) - 1:
-        api_request[user_input[i]] = user_input[i+1:]
-        i += 1
+    location_dict = {}
+    for origin in locations:
+        location_dict[origin] = []
+        for destination in locations:
+            if destination != origin:
+                location_dict[origin].append(destination)
+            else:
+                pass
+
+    # print "INPUT FOR API CALL", location_dict
+    return location_dict
+    #O(n^3)
 
 
-    print "API Request", api_request
-    return api_request
-    
-
-
-def call_distance_api(api_request):
+def get_api_distance(location_dict):
     """Unpack location_dict dictionary, and bind 'origin' to the key, and 'dests'
     to the value. Distance matrix API call takes 3 parameters: origin, dests, and units.
     'Origin' and 'Dests' can be string, a list or geocodes. API call returns a
@@ -44,19 +45,21 @@ def call_distance_api(api_request):
 
     """
 
-    api_result = []
-    for key, value in api_request.items():
-        origin = key
-        destinations = value
-        result = gmaps.distance_matrix(origin, destinations, units="imperial")
-        api_result.append(result)
+    list_distances = []
+    for pair in location_dict.items():
+        origin = pair[0]
+        dests = pair[1]
+        result = gmaps.distance_matrix(origin, dests, units="imperial")
+        list_distances.append(result)
 
-    print "RETURNED API", api_result
-    return api_result
-    
+    # print "RETURNED API", list_distances
+    return list_distances
+    #O(n) - unpacking
+    #O(1) - list append
+    #ttl: O(n)
 
 
-def parse_results_distance(api_result):
+def parse_results_distance(list_distances):
     """API call returned results include additional information besides just a
     distance number. Since origin, dests, and distance are not grouped together,
     need to parse each into individual lists to be concatnated later.
@@ -115,6 +118,7 @@ def parse_results_distance(api_result):
 
     # print "DISTANCE LIST", distance_list
     return distance_list
+    #O(n^2)
 
 
 def parse_results_origin(list_distances):
@@ -166,6 +170,7 @@ def parse_results_origin(list_distances):
 
     # print "ORIGIN LIST", origin_list
     return origin_list
+    #O(n)
 
 
 def parse_results_dests(list_distances):
@@ -216,6 +221,7 @@ def parse_results_dests(list_distances):
 
     # print "DEST PAIRS",dests_list
     return dests_list
+    #O(n)
 
 
 def concat_dest_dist(distance_list, dests_list):
@@ -246,6 +252,8 @@ def concat_dest_dist(distance_list, dests_list):
 
     # print "ORIGIN-DESTS", dest_dist_list 
     return dest_dist_list
+    #O(n)
+
 
 
 def sort_distance(dest_dist_list):
@@ -269,6 +277,7 @@ def sort_distance(dest_dist_list):
 
     # print "SORTED",sorted_dest_dist_list
     return sorted_dest_dist_list
+    #O(n)
 
 
 def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
@@ -290,7 +299,8 @@ def concat_origin_dest_dist(origin_list, sorted_dest_dist_list):
 
     # print "SORTED DICT", origin_dest_dist_dict
     return origin_dest_dist_dict
-
+    #O(n^2)
+    
 
 def get_origin_stop(locations):
     """Looking for address format uniformity: grabbing origin from Google Maps Geocode api call, so it matches
@@ -303,6 +313,7 @@ def get_origin_stop(locations):
 
     # print "ORIGIN",start
     return start
+    #O(1)
 
 
 def order_stops(start, origin_dest_dist_dict):
@@ -343,6 +354,7 @@ def order_stops(start, origin_dest_dist_dict):
 
     # print "ORDERED STOPS",stops
     return stops
+    #O(n^2)
 
 
 ###################################################################################################################################
