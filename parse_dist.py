@@ -11,7 +11,7 @@ google_api_key = os.environ.get("GOOGLE_MAPS_SERVER_API_KEY")
 gmaps = googlemaps.Client(key=google_api_key)
 
 
-def get_lists(locations):
+def create_api_request(user_input):
     """create origin-destination lists for API call
 
 
@@ -23,21 +23,19 @@ def get_lists(locations):
 
     """
 
-    location_dict = {}
-    for origin in locations:
-        location_dict[origin] = []
-        for destination in locations:
-            if destination != origin:
-                location_dict[origin].append(destination)
-            else:
-                pass
+    api_request = {}
 
-    # print "INPUT FOR API CALL", location_dict
-    return location_dict
-    #O(n^3)
+    i = 0
+    while i < len(user_input) - 1:
+        api_request[user_input[i]] = user_input[i+1:]
+        i += 1
+
+    print "API Request ", api_request
+    return api_request
+   
 
 
-def get_api_distance(location_dict):
+def call_distance_api(api_request):
     """Unpack location_dict dictionary, and bind 'origin' to the key, and 'dests'
     to the value. Distance matrix API call takes 3 parameters: origin, dests, and units.
     'Origin' and 'Dests' can be string, a list or geocodes. API call returns a
@@ -45,21 +43,21 @@ def get_api_distance(location_dict):
 
     """
 
-    list_distances = []
-    for pair in location_dict.items():
-        origin = pair[0]
-        dests = pair[1]
+    api_result = []
+    for key, value in api_request.items():
+        origin = key
+        dests = value
         result = gmaps.distance_matrix(origin, dests, units="imperial")
-        list_distances.append(result)
+        api_result.append(result)
 
-    # print "RETURNED API", list_distances
-    return list_distances
+    print "RETURNED API", api_result
+    return api_result
     #O(n) - unpacking
     #O(1) - list append
     #ttl: O(n)
 
 
-def parse_results_distance(list_distances):
+def parse_results_distance(api_result):
     """API call returned results include additional information besides just a
     distance number. Since origin, dests, and distance are not grouped together,
     need to parse each into individual lists to be concatnated later.

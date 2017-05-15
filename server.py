@@ -32,18 +32,19 @@ def get_list_locations():
     call helper functions to call distance API, parse returned results
     compare distance and return list of stops"""
 
-    locations = request.form.getlist("loc")
-    locations = filter(None, locations)
+    user_input = request.form.getlist("loc")
+    user_input = filter(None, user_input)
+    print "user_input ", user_input
 
-    location_dict = get_lists(locations)
-    list_distances = get_api_distance(location_dict)
-    distance_list = parse_results_distance(list_distances)
+    api_request = create_api_request(user_input)
+    api_result = call_distance_api(api_request)
+    distance_list = parse_results_distance(api_result)
     origin_list = parse_results_origin(list_distances)
     dests_list = parse_results_dests(list_distances)
     dest_dist_list = concat_dest_dist(distance_list, dests_list)
     sorted_dest_dist_list = sort_distance(dest_dist_list)
     origin_dest_dist_dict = concat_origin_dest_dist(origin_list, sorted_dest_dist_list)
-    start = get_origin_stop(locations)
+    start = get_origin_stop(user_input)
     stops = order_stops(start, origin_dest_dist_dict)
 
     origin = stops[0]
@@ -59,6 +60,7 @@ def get_list_locations():
     # origin = San Francisco, CA, USA
     # destination = Mountain View, CA, USA
     # waypts = ['Oakland, CA, USA', 'Orinda, CA, USA', 'San Mateo, CA, USA']
+
 
 
 if __name__ == "__main__":
