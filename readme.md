@@ -14,19 +14,20 @@ Beeline is a itinerary-building app that helps vacationers find the optimal driv
 - [Technology Stack](#tech-stack)
 - [Testing Coverage](#testing)
 - [How To Run Locally](#run-local)
+- [Current Optimization](#optimization)
 
 ## <a name='features'></a>Features
 
 - Location Submission (up to 5 incl. origin)
 - Autocomplete Location Submissions
-- Itinerary Algorithm Based on Finding-Nearest-Stop-to-Current-Location
+- Greedy algorithm: always choose next closest location 
 
 
 ## <a name="tech-stack"></a>Technology Stack
 
 **Application:** Python, Flask, Jinja
 
-**Front-End:** HTML/CSS, Bootstrap, JQuery, JavaScript  
+**Front-End:** JavaScript, HTML/CSS, Bootstrap,   
 
 **APIs:** Google Maps Distance Matrix API, Google Places API Web Service, Google Maps Directions API, Google Maps Geocoding API, Google Maps Javascript API
 
@@ -59,6 +60,15 @@ In a new Terminal run App
 ```
 > python server.py
 ```
+
+## <a name="optimization"></a>Current Optimization
+
+- Profiled application 
+- Decrease number of API calls
+	- Building db to store distance results
+	- Update logic to search db first for every new request
+	- If not found, then make API call
+- Refactor using Dijkstra's algorithm
 
 
 Author: [Katia Wu](https://www.linkedin.com/in/katiayx)
