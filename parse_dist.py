@@ -36,20 +36,15 @@ def create_api_request(user_input):
     
 
 
-def call_distance_api(api_request):
+def call_distance_api(origin, destinations):
     """Unpack location_dict dictionary, and bind 'origin' to the key, and 'dests'
     to the value. Distance matrix API call takes 3 parameters: origin, dests, and units.
     'Origin' and 'Dests' can be string, a list or geocodes. API call returns a
     dictionary with nested list of dictionaries.
 
     """
-
-    api_result = []
-    for key, value in api_request.items():
-        origin = key
-        destinations = value
-        result = gmaps.distance_matrix(origin, destinations, units="imperial")
-        api_result.append(result)
+    
+    api_result = gmaps.distance_matrix(origin, destinations, units="imperial")
 
     print "RETURNED API", api_result
     return api_result

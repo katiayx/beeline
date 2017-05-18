@@ -81,7 +81,7 @@ def search_database():
     #[(San Francisco, CA USA, Oakland, CA USA), (Oakland, CA USA, San Leandro, CA USA)]
 
     #look up start and destination in db
-    
+    distance_dict = {}
     for citypairs in input_pairs:
         start_name = citypairs[0]
         destination_name = citypairs[1]
@@ -91,12 +91,14 @@ def search_database():
         #if both start and destination are in the database
         if start and destination:
             distance = Distance.query.filter_by(start_id=start_id, destination_id=destination_id).first()
-
-
-
-        if not start:
+            distance_dict[(start, destination)] = distance
+        #if neither is in db:
+        elif not start and not destation:
+            origin = start
+            call_distance_api(origin, destination)
             start = Start(name=start_name)
             destination = Destination(name=destination_name)
+
 
 if __name__ == "__main__":
     app.config['PROFILE'] = True
