@@ -1,15 +1,28 @@
 
 import os
+
 from flask import (Flask, render_template, redirect, request, flash, session, jsonify)
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
-import json
+
 from werkzeug.contrib.profiler import ProfilerMiddleware
+
 from model import connect_to_db, db, Location, Distance
+
+from flask.ext.bcrypt import Bcrypt
+from flask.ext.login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user, login_required
+
+from wtforms import StringField, PasswordField
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import DataRequired, Email
 
 mykey = os.environ.get("GOOGLE_MAPS_BROWSER_API_KEY")
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
@@ -73,31 +86,19 @@ def search_database():
 
     #create location pairs out of input location list
     input_pairs = []
-    for i in range(len(user_input) - 1):
-        for j in range(i + 1, len(user_input)):
-            input_pairs.append((user_input[i], user_input[j]))
+    for i in xrange(len(user_input) - 1):
+        for j in xrange(i + 1, len(user_input)):
+            input_pairs.append([user_input[i], user_input[j]])
 
     print "input_pairs ", input_pairs
     #[(San Francisco, CA USA, Oakland, CA USA), (Oakland, CA USA, San Leandro, CA USA)]
 
-    #look up start and destination in db
-    distance_dict = {}
-    for citypairs in input_pairs:
-        start_name = citypairs[0]
-        destination_name = citypairs[1]
-        start = Start.query.filter_by(name=start_name).first()
-        destination = Destination.query.filter_by(name=destination_name).first()
+    #look up each pair in db
+    for locations in input_pairs:
+        locations[0] = 
 
-        #if both start and destination are in the database
-        if start and destination:
-            distance = Distance.query.filter_by(start_id=start_id, destination_id=destination_id).first()
-            distance_dict[(start, destination)] = distance
-        #if neither is in db:
-        elif not start and not destation:
-            origin = start
-            call_distance_api(origin, destination)
-            start = Start(name=start_name)
-            destination = Destination(name=destination_name)
+
+    
 
 
 if __name__ == "__main__":

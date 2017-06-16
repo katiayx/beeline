@@ -1,6 +1,4 @@
-"""helper functions: once input is received, data is organized and sent via API
-call to get distance information. Once API results are returned, functions to
-help parse data into final dictionary to be jsonified"""
+
 
 import os
 import googlemaps
