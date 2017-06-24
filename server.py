@@ -77,12 +77,17 @@ def get_list_locations():
     # waypts = ['Oakland, CA, USA', 'Orinda, CA, USA', 'San Mateo, CA, USA']
 
 
+#search db first
+
 def search_database():
     """Check if distance information already exists in db for inputed locations """
 
     user_input = request.form.getlist("loc")
     user_input = filter(None, user_input)
 
+    #search db first, search route tables, if pair exist, no need to search, grab the distance
+    #if pair doesn't exist call API
+    #save results back to database - make sure again if pair exist
 
     #create location pairs out of input location list
     input_pairs = []
@@ -95,7 +100,7 @@ def search_database():
 
     #look up each pair in db
     for locations in input_pairs:
-        locations[0] = 
+        locations[0] = Distance.query.filter_by
 
 
     

@@ -8,77 +8,48 @@ class Location(db.Model):
     __tablename__ = "locations"
 
     location_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(100))
-    address_id = db.Column(db.Integer, db.ForeignKey('addresses.address_id'), unique=True)
-
-
-    addresses = db.relationship('Address', backref='locations')
+    name = db.Column(db.String(200))
 
 
     def __repr__(self):
-        return "<Location('%s', '%s', '%s'>" % (self.name, self.location_id, self.address_id)
+        return "<Location('%s', '%s'>" % (self.name, self.location_id)
 
-
-class Address(db.Model):
-    """Child table of Location: contains address components"""
-
-    __tablename__ = "addresses"
-
-    address_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    number = db.Column(db.Integer)
-    street = db.Column(db.String(250))
-    city = db.Column(db.String(100), nullable=False)
-    state = db.Column(db.String(15))
-    zipcode = db.Column(db.Integer)
-    country = db.Column(db.String(100))
-
-
-    def __repr__(self):
-        return "<Address('%s', '%s', '%s', '%s', '%s'>" % (self.number, self.street, self.city, self.state, self.zipcode)
-
-
-class Distance(db.Model):
-    """Stores distance data for two locations"""
-
-    __tablename__ = "distances"
-
-    distance_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    location_1_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
-    location_2_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
-    distance = db.Column(db.Integer)
-
-    location_1 = db.relationship('Location', backref='distances')
-    location_2 = db.relationship('Location', backref='distances')
-
-
-    def __repr__(self):
-        return "<location_id1=%s, location_id2=%s, distance=%s>" % (self.location_1_id, self.location_2_id, self.distance)
 
 
 class Route(db.Model):
-    """Stores routes searched by user"""
+    """Stores route distances"""
 
     __tablename__="routes"
 
+    #user submits - grab the locations, distance, names - store in route
+    # store location pairs -- need to save all combination pairs
+
     route_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     location_1_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
     location_2_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
-    location_3_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
-    location_4_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
-    location_5_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
+    distance = db.Integer()
 
-    user = db.relationship("User", backref="routes")
     location_1 = db.relationship("Location", backref="routes")
     location_2 = db.relationship("Location", backref="routes")
-    location_3 = db.relationship("Location", backref="routes")
-    location_4 = db.relationship("Location", backref="routes")
-    location_5 = db.relationship("Location", backref="routes")
 
 
     def __repr__(self):
-        return "<Searched route: %s, %s, %s, %s, %s>" % (self.location_1_id, self.location_2_id, self.location_3_id,
-                                                                     self.location_4_id, self.location_5_id)
+        return "<Searched route: %s, %s, %s>" % (self.route_id, self.location_1_id, self.location_2_id)
+
+
+class User_Route(db.Model):
+
+    __tablename__='user_routes'
+
+    user_route_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    route_id = db.Column(db.PickleType(db.Integer, db.ForeignKey('routes.route_id'), nullable=False))
+
+    user = db.relationship("User", backref="user_routes")
+    route = db.relationship("Route", backref="user_routes")
+
+    def __repr__(self):
+        return "<User route: %s, %s, %s>" % (self.user_route_id, self.user_id, self.route_id)
 
 
 class User(db.Model):
