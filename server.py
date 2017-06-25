@@ -100,10 +100,15 @@ def search_database():
 
     #look up each pair in db
     for locations in input_pairs:
-        locations[0] = Distance.query.filter_by
+        locations[0] = location_1
+        locations[1] = location_2
+        location = Route.query.filter((location_1==location_1 and location_2==location_2) | (location_1==location_2 and location_2==location_1)
+        return route.distance
+        if not location:
+                route = Route(location_1==location_1,location_2==location_2)
+                db.session.add(route)
+                db.session.commit()
 
-
-    
 
 
 if __name__ == "__main__":

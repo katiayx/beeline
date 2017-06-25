@@ -25,8 +25,8 @@ class Route(db.Model):
     # store location pairs -- need to save all combination pairs
 
     route_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    location_1_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
-    location_2_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
+    location_1 = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
+    location_2 = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
     distance = db.Integer()
 
     location_1 = db.relationship("Location", backref="routes")
@@ -34,7 +34,7 @@ class Route(db.Model):
 
 
     def __repr__(self):
-        return "<Searched route: %s, %s, %s>" % (self.route_id, self.location_1_id, self.location_2_id)
+        return "<Searched route: %s, %s, %s>" % (self.route_id, self.location_1, self.location_2)
 
 
 class User_Route(db.Model):
@@ -43,7 +43,7 @@ class User_Route(db.Model):
 
     user_route_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    route_id = db.Column(db.PickleType(db.Integer, db.ForeignKey('routes.route_id'), nullable=False))
+    route_id = db.Column(db.PickleType(), nullable=False)
 
     user = db.relationship("User", backref="user_routes")
     route = db.relationship("Route", backref="user_routes")
