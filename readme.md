@@ -1,7 +1,6 @@
 Beeline
 --------
 final Hackbright project
-[Deployed version](https://beeline-hb.herokuapp.com)
 
 **Description**
 
